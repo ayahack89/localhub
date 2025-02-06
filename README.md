@@ -3,16 +3,20 @@ Local Hub is an open-source concept designed to give developers full control ove
 
 ![Local hub main logo image](assets/images/local-hub-logo.png)
 
-**Purpose**
-The vision behind Local Hub is simple yet powerful: to give developers full control over their code, credentials, and repositories—without the need for expensive storage subscriptions, "pro" features, or third-party restrictions.
+---
 
-At its core, Local Hub prioritizes decentralization and security, making it an ideal solution for private repositories. Instead of relying on centralized cloud services, your code stays in your own system, ensuring complete ownership and privacy.
+## 📌 Purpose
+The vision behind **Local Hub** is simple yet powerful: to give developers **full control** over their code, credentials, and repositories—without the need for expensive storage subscriptions, "pro" features, or third-party restrictions.
 
-Local Hub runs via an Ngrok-exposed local server, allowing you to securely share repositories with your team through a one-time authentication process. This approach ensures that access is temporary and entirely in your hands—if you detect any suspicious activity, you can instantly shut down access, protecting your data.
+At its core, Local Hub prioritizes **decentralization and security**, making it an ideal solution for **private repositories**. Instead of relying on centralized cloud services, your code stays **in your own system**, ensuring complete **ownership and privacy**.
 
-But Local Hub is more than just a hosting tool; it’s a customizable framework. It provides essential repository management features while allowing developers to extend and adapt it to their unique needs.
+Local Hub runs via an **Ngrok-exposed local server**, allowing you to securely share repositories with your team through a **one-time authentication process**. This approach ensures that access is **temporary and entirely in your hands**—if you detect any suspicious activity, you can instantly **shut down access**, protecting your data.
 
-By keeping security, flexibility, and decentralization at its heart, Local Hub empowers developers to take back control of their code—without compromises. If you believe in open-source innovation and data sovereignty, join us in making Local Hub the future of secure, self-hosted development.
+But Local Hub is more than just a hosting tool; it’s a **customizable framework**. It provides essential **repository management features** while allowing developers to **extend and adapt** it to their unique needs.
+
+By keeping **security, flexibility, and decentralization** at its heart, Local Hub empowers developers to **take back control of their code—without compromises**. If you believe in **open-source innovation** and **data sovereignty**, join us in making Local Hub the future of **secure, self-hosted development**.
+
+---
 
 **Tech Description**
 *Who Can Use Local Hub?
@@ -29,9 +33,7 @@ The backend and frontend work together efficiently, ensuring a smooth, secure, a
 
 By keeping things modular and extendable, Local Hub allows developers to customize and expand its functionality based on their specific needs. Whether you're using it for personal projects or collaborating with a team, this framework provides full ownership, security, and flexibility—all without relying on third-party platforms.
 
-Here’s a **refined, technically sound, and engaging** version of your **"How to Use"** section:  
 
----
 
 ## **How to Use Local Hub?**  
 
