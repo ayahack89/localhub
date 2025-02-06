@@ -1,5 +1,7 @@
 # localhub
-Local Hub is an open-source concept designed to give developers full control over their code and repositories and collaboration. Built with privacy and decentralization in mind, it allows users to securely store, view, and share repositories without relying on any centralized services. 
+Local Hub is an open-source concept designed to give developers full control over their code and repositories and collaboration. Built with privacy and decentralization in mind, it allows users to securely store, view, and share repositories without relying on any centralized services.
+
+![Local hub main logo image](assets/images/local-hub-logo.png)
 
 **Purpose**
 The vision behind Local Hub is simple yet powerful: to give developers full control over their code, credentials, and repositories—without the need for expensive storage subscriptions, "pro" features, or third-party restrictions.
