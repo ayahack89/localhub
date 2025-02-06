@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+     <link rel="shortcut icon" href="{{ url_for('static', filename='img/local-hub-favicon.png') }}" type="image/x-icon">
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <title>{% block title%}{% endblock %}</title>
+</head>
+<style>
+     :root {
+          --dark-theme: #09090b;
+          --light-theme: #ffff;
+          --code-body: rgba(4, 183, 254, 0.651) ;
+     }
+
+     .bg-dark-theme {
+          background-color: var(--dark-theme);
+          color: white;
+     }
+
+     .bg-light-theme {
+          background-color: var(--light-theme);
+          color: black;
+     }
+
+
+     select {
+          padding: 2px;
+          border: 2px solid black;
+          border-radius: 50px;
+          font-weight: bolder;
+     }
+
+     /*Body*/
+     .dir-list {
+          list-style-type: none;
+          font-size: 1.1rem;
+          
+     }
+     .dir-list a{
+          text-decoration: none;
+          font-size: 1.1rem;
+          color: rgb(13, 155, 211);
+     }
+     .s-span{
+          font-family: 'Courier New', Courier, monospace;
+     }
+
+     /*Navbar*/
+     .navbar {
+          background-color: transparent;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+     }
+     .navbar .logo{
+          display: flex;
+          justify-content: left;
+          align-items: center;
+     }
+
+     .navbar .nav-ul {
+          display: flex;
+          justify-content: right;
+     }
+
+     .navbar .nav-ul li {
+          list-style-type: none;
+     }
+     .navbar .nav-ul li a{
+          text-decoration: none;
+          font-size: 1.2rem;
+     }
+
+     /* Code base */
+     .pre{
+          padding: 10px;
+          margin: 10px;
+          background-color: var(--code-body);
+          border: none;
+          border-radius: 10px;
+     }
+     .back-btn{
+          text-decoration: none;
+     }
+     .copy{
+          display: flex;
+          justify-content: right;
+          
+     }
+     .copy i{
+          font-size: 1.6rem;
+     }
+
+</style>
+
+<body>
+     <!--Navbar -start -->
+     <nav class="navbar px-2">
+          <div class="logo">
+              
+               <img src="{{ url_for('static', filename='img/local-hub-logo.png') }}" alt="logo" width="400px">
+              
+          </div>
+          <ul class="nav-ul">
+               <li class="px-2"><a href="{{ url_for ('home') }}"><i class="ri-folder-cloud-line"></i> root_dir</a></li>
+               <li class="px-2"><!-- Toggle button -start  -->
+                    <select name="theme" id="theme">
+                         <option value="SystemDefault" selected id="systemDefault">System Default</option>
+                         <option value="Light" id="lightTheme">Light</option> 
+                         <option value="Dark" id="darkTheme">Dark</option>
+                    </select>
+                    <!-- Toggle button -end  -->
+               </li>
+
+          </ul>
+     </nav>
+     <!--Navbar -end-->
+
+
+     <div class="container">
+          {% block content %} {% endblock %}
+     </div>
+     <script>
+
+          const themeToggle = document.getElementById('theme');
+
+          function applyTheme(theme) {
+               document.body.classList.remove('bg-dark-theme', 'bg-light-theme');
+
+               if (theme === 'SystemDefault') {
+                    // Check system preference
+                    const systemPrefersDefault = window.matchMedia('(prefers-color-scheme: light)').matches;
+                    document.body.classList.add(systemPrefersDefault ? 'bg-light-theme' : 'bg-dark-theme');
+                    document.body.classList.add(systemPrefersDefault ? 'title-light' : 'title-dark');
+               } else {
+                    document.body.classList.add(theme === 'Dark' ? 'bg-dark-theme' : 'bg-light-theme');
+               }
+          }
+
+          const savedTheme = localStorage.getItem('theme') || 'SystemDefault';
+          themeToggle.value = savedTheme;
+          applyTheme(savedTheme);
+          themeToggle.addEventListener('change', (e) => {
+               const selectedTheme = e.target.value;
+               localStorage.setItem('theme', selectedTheme);
+               applyTheme(selectedTheme);
+          });
+
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+               if (themeToggle.value === 'SystemDefault') {
+                    applyTheme('SystemDefault');
+               }
+          });
+
+     </script>
+
+</body>
+
+</html>

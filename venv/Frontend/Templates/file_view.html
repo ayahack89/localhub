@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Local Hub - File: {{ file_name }}{% endblock %}
+{% block content %}
+
+<span class="p-2 fw-light s-span"><i class="ri-file-line"></i> {{ file_name }}</span>
+<a href="{{ request.referrer or url_for('repo_list') }}" class="back-btn px-3">Back to previous <i
+        class="ri-arrow-go-back-fill"></i></a>
+
+<div class="pre">
+    <div class="copy">
+        <span onclick="copyContent(document.getElementById('copy-text').innerText)"><i class="ri-file-copy-line"></i></span>
+    </div>
+    <pre id="copy-text">{{ content }}</pre>
+</div>
+<a href="{{ request.referrer or url_for('repo_list') }}" class="back-btn py-5">Back to previous <i
+        class="ri-arrow-go-back-fill"></i></a>
+
+<script>
+    let copyText = document.getElementById('copy-text').innerText;
+    let icon = document.querySelector('.ri-file-copy-line');
+
+    const copyContent = async (copyText) => {
+        try {
+            await navigator.clipboard.writeText(copyText);
+            icon.classList.remove('ri-file-copy-line');
+            icon.classList.add('ri-file-copy-fill');
+            console.log("Copied!!");
+        } catch (error) {
+            console.error("Oops! :(", error);
+        }
+    };
+
+
+</script>
+{% endblock %}
