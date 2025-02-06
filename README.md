@@ -1,6 +1,16 @@
 # localhub
 Local Hub is an open-source concept designed to give developers full control over their code and repositories and collaboration. Built with privacy and decentralization in mind, it allows users to securely store, view, and share repositories without relying on any centralized services.
 
+
+![License](https://img.shields.io/github/license/ayahack89/localhub)
+![Stars](https://img.shields.io/github/stars/ayahack89/localhub?style=social)
+![Forks](https://img.shields.io/github/forks/ayahack89/localhub?style=social)
+![Contributors](https://img.shields.io/github/contributors/ayahack89/localhub)
+![Issues](https://img.shields.io/github/issues/ayahack89/localhub)
+
+
+
+
 ---
 
 ![Local hub main logo image](assets/images/local-hub-logo.png)
