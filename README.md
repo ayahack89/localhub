@@ -20,10 +20,10 @@ By keeping **security, flexibility, and decentralization** at its heart, Local H
 
 ## 🛠️ Tech Description
 
-## ** Who Can Use Local Hub? **
+## **Who can use Local Hub?** 
 Local Hub is designed primarily for **developers and tech-savvy users** who want **full control** over their code and repositories. However, even users with **basic computer knowledge** and an understanding of how the internet works can follow simple steps to set it up and use it effectively.
 
-## ** How It Works? **
+## **How it works?** 
 Local Hub follows a **lightweight yet powerful** architecture that runs within a **virtual environment** on your local system. This architecture is divided into two key components:
 
 #### ⚙️ Backend  
