@@ -18,20 +18,25 @@ By keeping **security, flexibility, and decentralization** at its heart, Local H
 
 
 
-**Tech Description**
-*Who Can Use Local Hub?
-Local Hub is designed primarily for developers and tech-savvy users who want full control over their code and repositories. However, even users with basic computer knowledge and an understanding of how the internet works can follow simple steps to set it up and use it effectively.
+## 🛠️ Tech Description
 
-*How It Works?
-Local Hub follows a lightweight yet powerful architecture that runs within a virtual environment on your local system. This architecture is divided into two key components:
+## ** Who Can Use Local Hub?
+Local Hub is designed primarily for **developers and tech-savvy users** who want **full control** over their code and repositories. However, even users with **basic computer knowledge** and an understanding of how the internet works can follow simple steps to set it up and use it effectively.
 
-🔹 Backend – The backend is responsible for securely managing repositories, static files, and app views. It also includes an intelligent caching mechanism to optimize performance.
+## ** How It Works?
+Local Hub follows a **lightweight yet powerful** architecture that runs within a **virtual environment** on your local system. This architecture is divided into two key components:
 
-🔹 Frontend – The frontend consists of dynamic templates that render and display folders and files from the backend. It utilizes dynamic routing to provide seamless navigation and access to repositories without exposing unnecessary details.
+#### ⚙️ Backend  
+- **Manages repositories, static files, and app views securely**  
+- **Includes a caching mechanism** to optimize performance  
 
-The backend and frontend work together efficiently, ensuring a smooth, secure, and real-time experience for accessing and sharing repositories.
+#### 🎨 Frontend  
+- **Dynamic templates render and display folders/files from the backend**  
+- **Utilizes dynamic routing** to provide seamless navigation without exposing unnecessary details  
 
-By keeping things modular and extendable, Local Hub allows developers to customize and expand its functionality based on their specific needs. Whether you're using it for personal projects or collaborating with a team, this framework provides full ownership, security, and flexibility—all without relying on third-party platforms.
+The **backend and frontend** work together efficiently, ensuring a **smooth, secure, and real-time experience** for accessing and sharing repositories.
+
+By keeping things **modular and extendable**, Local Hub allows developers to **customize and expand** its functionality based on their specific needs. Whether you're using it for **personal projects** or **team collaborations**, this framework provides **full ownership, security, and flexibility** all without relying on third-party platforms.
 
 
 
@@ -45,7 +50,7 @@ Before getting started, ensure your system meets the following **requirements**:
    python --version
    ```  
 
-2️⃣ **Ngrok**: Download and install Ngrok from [here](https://ngrok.com/downloads/windows). *(Local Hub also includes a preconfigured Ngrok binary in the repository—try running it first before downloading.)*  
+2️⃣ **Ngrok**: Download and install Ngrok from [here](https://ngrok.com/downloads/windows). *(Local Hub also includes a preconfigured Ngrok binary in the repository try running it first before downloading.)*  
 
 3️⃣ **Flask (Python Web Module)**: Install Flask using:  
    ```sh
@@ -64,9 +69,8 @@ Select an **empty storage location** (e.g., `D:\LocalHub\`) for better security 
 #### 🔹 **2. Clone the Repository**  
 Download the Local Hub project by running:  
 ```sh
-git clone https://github.com/your-repository/local-hub.git
+git clone https://github.com/ayahack89/localhub.git
 ```
-*(Replace the link with the actual repository URL when available.)*  
 
 #### 🔹 **3. Add Your Files**  
 Place your **private repositories, files, and folders** in:  
