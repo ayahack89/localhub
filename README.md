@@ -22,11 +22,9 @@ By keeping **security, flexibility, and decentralization** at its heart, Local H
 
 🔍 Let's Deep Dive into Tech Description
 
-### 🧑‍💻 **Who Can Use Local Hub?**
-  
-### 🔧 **How It Works?**
-
-### 🚀 **How to Use Local Hub?**
+🧑‍💻 **Who Can Use Local Hub?**
+🔧 **How It Works?**
+🚀 **How to Use Local Hub?**
 
 
 ## **Who can use Local Hub?** 
