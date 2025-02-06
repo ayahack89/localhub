@@ -19,17 +19,15 @@ By keeping **security, flexibility, and decentralization** at its heart, Local H
 
 
 ## 🛠️ Tech Description
-Got it! Here's the provided text with added emojis and formatted in GitHub Markdown:
 
-```markdown
-# 🔍 **Let's Deep Dive into Tech Description**
+🔍 Let's Deep Dive into Tech Description
 
-## 🧑‍💻 **Who Can Use Local Hub?**
+### 🧑‍💻 **Who Can Use Local Hub?**
   
-## 🔧 **How It Works?**
+### 🔧 **How It Works?**
 
-## 🚀 **How to Use Local Hub?**
-```
+### 🚀 **How to Use Local Hub?**
+
 
 ## **Who can use Local Hub?** 
 Local Hub is designed primarily for **developers and tech-savvy users** who want **full control** over their code and repositories. However, even users with **basic computer knowledge** and an understanding of how the internet works can follow simple steps to set it up and use it effectively.
