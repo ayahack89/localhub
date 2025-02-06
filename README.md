@@ -20,10 +20,10 @@ By keeping **security, flexibility, and decentralization** at its heart, Local H
 
 ## 🛠️ Tech Description
 
-## ** Who Can Use Local Hub?
+## ** Who Can Use Local Hub?**
 Local Hub is designed primarily for **developers and tech-savvy users** who want **full control** over their code and repositories. However, even users with **basic computer knowledge** and an understanding of how the internet works can follow simple steps to set it up and use it effectively.
 
-## ** How It Works?
+## ** How It Works?**
 Local Hub follows a **lightweight yet powerful** architecture that runs within a **virtual environment** on your local system. This architecture is divided into two key components:
 
 #### ⚙️ Backend  
@@ -151,39 +151,40 @@ Local Hub is designed to provide **secure, decentralized, and flexible** reposit
 
 🔹 **Full Code Ownership** – Unlike cloud-based platforms, your repositories stay on your **own system**, ensuring **100% data control** without relying on third parties.  
 
-🔹 **Decentralized & Subscription-Free** – No monthly fees, no "pro" features—just full access to your code without restrictions.  
+🔹 **Decentralized & Subscription-Free**, no monthly fees, no "pro" features—just full access to your code without restrictions and you can build your own features as you need.  
 
-🔹 **Private & Secure Repository Sharing** – Share repositories securely using **Ngrok-powered temporary URLs** with **optional authentication** to protect access.  
+🔹 **Private & Secure Repository Sharing**, share repositories securely using **Ngrok-powered temporary URLs** with **optional authentication** to protect access.  
 
-🔹 **Virtual Environment for Stability** – Runs in an isolated **Python virtual environment**, preventing dependency conflicts and ensuring a stable development experience.  
+🔹 **Virtual Environment for Stability**, runs in an isolated **Python virtual environment**, preventing dependency conflicts and ensuring a stable development experience.  
 
-🔹 **Lightweight & Extendable** – Designed as a **framework**, not just an app. Developers can **customize and extend** its features as needed.  
+🔹 **Lightweight & Extendable**, designed as a **framework**, not just an app. Developers can **customize and extend** its features as needed.  
 
-🔹 **Dynamic Frontend Rendering** – Automatically generates a **user-friendly interface** for browsing repositories, thanks to **Flask-based dynamic routing**.  
-
-🔹 **Quick Deployment & Shutdown** – Easily **start, stop, and reset** access to your repositories within seconds. If anything seems off, you can **shut it down instantly**.  
+🔹 **Quick Deployment & Shutdown**, easily **start, stop, and reset** access to your repositories within seconds. If anything seems off, you can **shut it down instantly**.  
 
 ---
 
 ### **Pros** ✅  
-✔ **Privacy-First** – Your code stays **in your hands**, with no third-party involvement.  
-✔ **No Subscription Costs** – Completely **free to use** without limitations.  
-✔ **Customizable** – Built to be **adaptable**; add your own features as needed.  
-✔ **Secure Access Control** – Ngrok provides **temporary access** that you can revoke anytime.  
-✔ **Lightweight & Fast** – No heavy installations, runs **directly on your local machine**.  
+✔ **Privacy-First :**  Your code stays **in your hands**, with no third-party involvement.  
+✔ **No Subscription Costs :** Completely **free to use** without limitations.  
+✔ **Customizable :** Built to be **adaptable**; add your own features as needed.  
+✔ **Secure Access Control :** Ngrok provides **temporary access** that you can revoke anytime.  
+✔ **Lightweight & Fast :** No heavy installations, runs **directly on your local machine**.  
 
 ---
 
 ### **Cons** ❌  
-✖ **Requires Basic Technical Knowledge** – Non-technical users may find it difficult to set up without guidance.  
-✖ **Dependent on Local Machine Uptime** – If your PC is off, the repository is inaccessible.  
-✖ **Ngrok Limitations** – Free Ngrok plans have some **session limits**, requiring occasional reconnects.  
-✖ **Manual Setup Required** – Unlike cloud solutions, you must **manually configure** and maintain the setup.  
+✖ **Requires Basic Technical Knowledge :** Non-technical users may find it difficult to set up without guidance.  
+✖ **Dependent on Local Machine Uptime :** If your PC is off, the repository is inaccessible.  
+✖ **Ngrok Limitations :** Free Ngrok plans have some **session limits**, requiring occasional reconnects.  
+✖ **Manual Setup Required :** Unlike cloud solutions, you must **manually configure** and maintain the setup.  
 
 ---
 
 ### **Conclusion**  
 Local Hub is an **innovative, self-hosted alternative** to traditional cloud repository platforms, offering **unmatched privacy, flexibility, and security**. By giving developers **full control** over their code without hidden costs, it enables a **truly decentralized** development workflow. While it requires some technical knowledge to set up, the **long-term benefits of data sovereignty and security far outweigh the initial effort**.  
 
-For developers who **prioritize security and independence**, Local Hub is the **perfect solution**—one that evolves with your needs, free from external restrictions. 🚀
+Currently, **Local Hub is in its early stages**, meaning it may not yet be the most optimized or fully efficient solution. However, the core **decentralized vision** behind it sets the foundation for something powerful. If we build a **strong community**, actively **develop new features**, and **rapidly enhance** the framework, it will evolve into a more robust, secure, and **developer-friendly alternative**.  
+
+A huge **thank you** to everyone using **Local Hub**, to those **contributing to its growth**, and to everyone **who supports this concept**. Your efforts will shape the future of decentralized, **free, and secure development**. 🚀  
+
 
