@@ -1,0 +1,5 @@
+Local Hub Issue List:
+
+C/C++, Java, PHP, and other system embedded files are not supported.
+Need a search bar to search the repository.
+.git integration needs innovative enhancements.

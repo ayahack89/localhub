@@ -12,7 +12,7 @@ def home():
         files_and_dir = os.listdir(f_path)
     except FileNotFoundError:
         abort(404)
-
+ 
     files_and_dir.sort()
     files_and_dir = [os.path.join(f_path, item) for item in files_and_dir]
 
