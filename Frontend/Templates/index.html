@@ -4,7 +4,7 @@
 <h3 class="text-center p-3">List of Repositories</h3>
     <ul>
         {% for item in files_and_dir %}
-            <li class="dir-list border border-info py-2 px-2 rounded mt-2"><i class="ri-folder-6-fill"></i> <a href="{{ item }}" target="_blank">{{ item }}</a></li>
+            <li class="dir-list py-2 px-2 mt-2"><i class="ri-folder-6-fill"></i> <a href="{{ item }}" target="_blank">{{ item }}</a></li>
         {% else %}
             <li>No files or directories available.</li>
         {% endfor %}
