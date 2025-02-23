@@ -1,0 +1,74 @@
+*{
+     margin: 0;
+     padding: 0;
+}
+body{
+     font-family: 'Times New Roman', Times, serif;
+     background-color: aliceblue;
+}
+.background{
+     background: rgba(0, 0, 0, 0) url("background.jpg");
+     background-repeat: no-repeat;
+     background-size: cover;
+     background-blend-mode: darken;
+}
+header {
+     background-color: rgba(118, 89, 4, 0.321);
+     
+}
+header nav{
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     color: chocolate;
+     padding: 10px;
+}
+.heading h1{
+
+     margin-left: 20px;
+}
+.navlist ul{
+    
+     display: flex;
+     margin-right: 20px;
+}
+.navlist ul li{
+     list-style-type: none;
+     padding: 10px;
+}
+main section .intro{
+     background-color: rgba(118, 90, 4, 0.512);
+     padding: 20px;
+     margin: auto;
+     width: 80vw;
+     margin-top: 10px;
+     color: whitesmoke;
+     border-radius:20px ;
+
+}
+.marge{
+     background-color: rgba(118, 90, 4, 0.512);
+     display: flex;
+     width: 83vw;
+     margin: auto;
+     margin-top: 10px;
+     border-radius: 20px;
+}
+main section .about{
+     padding: 20px;
+     margin: auto;
+     width: 80vw;
+     margin-top: 10px;
+     color: whitesmoke;
+
+}
+main section .learn{
+     padding: 20px;
+     margin: auto;
+     width: 80vw;
+     margin-top: 10px;
+     color: whitesmoke;
+
+}
+
+
