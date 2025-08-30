@@ -1,35 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Local Hub - File: {{ file_name }}{% endblock %}
 {% block content %}
-
-<span class="p-2 fw-light s-span"><i class="ri-file-line"></i> {{ file_name }}</span>
-<a href="{{ request.referrer or url_for('repo_list') }}" class="back-btn px-3">Back to previous <i
-        class="ri-arrow-go-back-fill"></i></a>
-
-<div class="pre">
-    <div class="copy">
-        <span onclick="copyContent(document.getElementById('copy-text').innerText)"><i class="ri-file-copy-line"></i></span>
+<div class="file-header">
+    <div class="breadcrumb">
+        <a href="{{ url_for('home') }}">Repositories</a>
+        <i class="ri-arrow-right-s-line"></i>
+        <a href="{{ request.referrer or url_for('repo_list') }}">Previous</a>
+        <i class="ri-arrow-right-s-line"></i>
+        <span>{{ file_name }}</span>
     </div>
-    <pre id="copy-text">{{ content }}</pre>
+    <a href="{{ request.referrer or url_for('repo_list') }}" class="back-btn">
+        <i class="ri-arrow-go-back-line"></i>
+        Back
+    </a>
 </div>
-<a href="{{ request.referrer or url_for('repo_list') }}" class="back-btn py-5">Back to previous <i
-        class="ri-arrow-go-back-fill"></i></a>
+
+<div class="code-container">
+    <div class="code-header">
+        <span>{{ file_name }}</span>
+        <button class="copy-btn" onclick="copyContent()">
+            <i class="ri-file-copy-line" id="copy-icon"></i>
+            Copy
+        </button>
+    </div>
+    <pre><code id="copy-text">{{ content }}</code></pre>
+</div>
 
 <script>
-    let copyText = document.getElementById('copy-text').innerText;
-    let icon = document.querySelector('.ri-file-copy-line');
-
-    const copyContent = async (copyText) => {
+    const copyContent = async () => {
+        const copyText = document.getElementById('copy-text').innerText;
+        const copyIcon = document.getElementById('copy-icon');
+        
         try {
             await navigator.clipboard.writeText(copyText);
-            icon.classList.remove('ri-file-copy-line');
-            icon.classList.add('ri-file-copy-fill');
-            console.log("Copied!!");
+            // Change icon to indicate success
+            copyIcon.classList.remove('ri-file-copy-line');
+            copyIcon.classList.add('ri-file-copy-fill');
+            
+            // Revert after 2 seconds
+            setTimeout(() => {
+                copyIcon.classList.remove('ri-file-copy-fill');
+                copyIcon.classList.add('ri-file-copy-line');
+            }, 2000);
         } catch (error) {
-            console.error("Oops! :(", error);
+            console.error("Failed to copy:", error);
         }
     };
-
-
 </script>
 {% endblock %}
