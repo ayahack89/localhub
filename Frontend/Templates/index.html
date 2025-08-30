@@ -1,12 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Local Hub - Keep It Local, Keep It Secure{% endblock  %}
-{% block content  %}
-<h3 class="text-center p-3">List of Repositories</h3>
-    <ul>
-        {% for item in files_and_dir %}
-            <li class="dir-list py-2 px-2 mt-2"><i class="ri-folder-6-fill"></i> <a href="{{ item }}" target="_blank">{{ item }}</a></li>
-        {% else %}
-            <li>No files or directories available.</li>
-        {% endfor %}
-    </ul>
-{% endblock  %}
+{% block title %}Local Hub - Keep It Local, Keep It Secure{% endblock %}
+{% block content %}
+<div class="repo-header">
+    <h3>Repositories</h3>
+</div>
+
+<div class="repo-list">
+    {% for item in files_and_dir %}
+    <div class="repo-item">
+        <i class="repo-icon ri-folder-6-fill"></i>
+        <a href="{{ item }}" class="repo-link">{{ item }}</a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="ri-folder-open-line" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+        <p>No repositories available</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

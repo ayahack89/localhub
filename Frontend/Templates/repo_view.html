@@ -1,12 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Local Hub - Repo: {{ repo_name }}{% endblock  %}
+{% block title %}Local Hub - Repo: {{ repo_name }}{% endblock %}
 {% block content %}
-    <span class="p-2 fw-light s-span"><i class="ri-folder-6-fill"></i> {{ repo_name }}</span>
-    <ul>
-        {% for item in files_and_dir %}
-            <li class="dir-list py-2 px-2 mt-2"><i class="ri-folder-6-line"></i> <a href="{{ url_for('repo_view', repo_path=item) }}">{{ item }}</a></li>
-        {% else %}
-            <li>No files or directories available.</li>
-        {% endfor %}
-    </ul>
-{% endblock  %}
+<div class="file-header">
+    <div class="breadcrumb">
+        <a href="{{ url_for('home') }}">Repositories</a>
+        <i class="ri-arrow-right-s-line"></i>
+        <span>{{ repo_name }}</span>
+    </div>
+</div>
+
+<div class="repo-list">
+    {% for item in files_and_dir %}
+    <div class="repo-item">
+        <i class="repo-icon ri-folder-6-line"></i>
+        <a href="{{ url_for('repo_view', repo_path=item) }}" class="repo-link">{{ item }}</a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="ri-folder-open-line" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+        <p>This directory is empty</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -2,163 +2,355 @@
 <html lang="en">
 
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-     <link rel="shortcut icon" href="{{ url_for('static', filename='img/local-hub-favicon.png') }}" type="image/x-icon">
-     <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}">
-     <link rel="stylesheet" href="{{ url_for('static', filename='fonts/remixicon.css')}}">
-     <title>{% block title%}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/local-hub-favicon.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/remixicon.css')}}">
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <style>
-     :root {
-          --dark-theme: #09090b;
-          --light-theme: #ffff;
-          --code-body: rgba(4, 183, 254, 0.651) ;
-     }
+    :root {
+        --dark-bg: #0d1117;
+        --dark-surface: #161b22;
+        --dark-border: #30363d;
+        --dark-text: #f0f6fc;
+        --dark-text-secondary: #8b949e;
+        --dark-accent: #58a6ff;
+        
+        --light-bg: #ffffff;
+        --light-surface: #f6f8fa;
+        --light-border: #d0d7de;
+        --light-text: #24292f;
+        --light-text-secondary: #57606a;
+        --light-accent: #0969da;
+        
+        --code-bg: #f6f8fa;
+        --code-border: #e1e4e8;
+    }
 
-     .bg-dark-theme {
-          background-color: var(--dark-theme);
-          color: white;
-     }
+    [data-theme="dark"] {
+        --bg: var(--dark-bg);
+        --surface: var(--dark-surface);
+        --border: var(--dark-border);
+        --text: var(--dark-text);
+        --text-secondary: var(--dark-text-secondary);
+        --accent: var(--dark-accent);
+        --code-bg: var(--dark-surface);
+        --code-border: var(--dark-border);
+    }
 
-     .bg-light-theme {
-          background-color: var(--light-theme);
-          color: black;
-     }
+    [data-theme="light"] {
+        --bg: var(--light-bg);
+        --surface: var(--light-surface);
+        --border: var(--light-border);
+        --text: var(--light-text);
+        --text-secondary: var(--light-text-secondary);
+        --accent: var(--light-accent);
+        --code-bg: var(--light-surface);
+        --code-border: var(--light-border);
+    }
 
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        transition: background-color 0.3s, color 0.3s;
+    }
 
-     select {
-          padding: 2px;
-          border: 2px solid black;
-          border-radius: 50px;
-          font-weight: bolder;
-     }
+    .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
 
-     /*Body*/
-     .dir-list {
-          list-style-type: none;
-          font-size: 1.1rem;
-          
-     }
-     .dir-list a{
-          text-decoration: none;
-          font-size: 1.1rem;
-          color: rgb(13, 155, 211);
-     }
-     .s-span{
-          font-family: 'Courier New', Courier, monospace;
-     }
+    /* Navigation */
+    .navbar {
+        background-color: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0.5rem 1rem;
+    }
 
-     /*Navbar*/
-     .navbar {
-          background-color: transparent;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-     }
-     .navbar .logo{
-          display: flex;
-          justify-content: left;
-          align-items: center;
-     }
+    .navbar img {
+        height: 32px;
+        width: auto;
+    }
 
-     .navbar .nav-ul {
-          display: flex;
-          justify-content: right;
-     }
+    .nav-ul {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        gap: 1rem;
+    }
 
-     .navbar .nav-ul li {
-          list-style-type: none;
-     }
-     .navbar .nav-ul li a{
-          text-decoration: none;
-          font-size: 1.2rem;
-     }
+    .nav-ul li {
+        list-style: none;
+    }
 
-     /* Code base */
-     .pre{
-          padding: 10px;
-          margin: 10px;
-          background-color: var(--code-body);
-          border: none;
-          border-radius: 10px;
-     }
-     .back-btn{
-          text-decoration: none;
-     }
-     .copy{
-          display: flex;
-          justify-content: right;
-          
-     }
-     .copy i{
-          font-size: 1.6rem;
-     }
+    .nav-link {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
 
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Theme Selector */
+    .theme-select {
+        background-color: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.5rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+    }
+
+    /* Repository List */
+    .repo-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2rem 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .repo-list {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .repo-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border);
+        transition: background-color 0.2s;
+    }
+
+    .repo-item:last-child {
+        border-bottom: none;
+    }
+
+    .repo-item:hover {
+        background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .repo-icon {
+        margin-right: 0.75rem;
+        color: var(--text-secondary);
+        font-size: 1.25rem;
+    }
+
+    .repo-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .repo-link:hover {
+        text-decoration: underline;
+    }
+
+    /* File View */
+    .file-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2rem 0 1rem;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .breadcrumb a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text);
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        transition: background-color 0.2s;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        text-decoration: none;
+        color: var(--text);
+    }
+
+    .code-container {
+        background-color: var(--code-bg);
+        border: 1px solid var(--code-border);
+        border-radius: 6px;
+        margin: 1rem 0;
+        overflow: hidden;
+    }
+
+    .code-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+        background-color: rgba(0, 0, 0, 0.03);
+        border-bottom: 1px solid var(--code-border);
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .copy-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+
+    .copy-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    pre {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        font-size: 0.875rem;
+        line-height: 1.45;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .nav-ul {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .file-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
 </style>
 
 <body>
-     <!--Navbar -start -->
-     <nav class="navbar px-2">
-          <div class="logo">
-              
-               <img src="{{ url_for('static', filename='img/local-hub-logo.png') }}" alt="logo" width="400px">
-              
-          </div>
-          <ul class="nav-ul">
-               <li class="px-2"><a href="{{ url_for ('home') }}"><i class="ri-folder-cloud-line"></i> root_dir</a></li>
-               <li class="px-2"><!-- Toggle button -start  -->
-                    <select name="theme" id="theme">
-                         <option value="SystemDefault" selected id="systemDefault">System Default</option>
-                         <option value="Light" id="lightTheme">Light</option> 
-                         <option value="Dark" id="darkTheme">Dark</option>
-                    </select>
-                    <!-- Toggle button -end  -->
-               </li>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/local-hub-logo.png') }}" alt="Local Hub Logo">
+        </div>
+        <ul class="nav-ul">
+            <li>
+                <a href="{{ url_for('home') }}" class="nav-link">
+                    <i class="ri-folder-cloud-line"></i>
+                    <span>Root Directory</span>
+                </a>
+            </li>
+            <li>
+                <select name="theme" id="theme" class="theme-select">
+                    <option value="SystemDefault">System Default</option>
+                    <option value="Light">Light</option>
+                    <option value="Dark">Dark</option>
+                </select>
+            </li>
+        </ul>
+    </nav>
 
-          </ul>
-     </nav>
-     <!--Navbar -end-->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
 
+    <script>
+        const themeToggle = document.getElementById('theme');
+        const body = document.body;
 
-     <div class="container">
-          {% block content %} {% endblock %}
-     </div>
-     <script>
+        function applyTheme(theme) {
+            // Remove any existing theme classes
+            body.removeAttribute('data-theme');
+            
+            if (theme === 'SystemDefault') {
+                // Check system preference
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                body.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            } else {
+                body.setAttribute('data-theme', theme.toLowerCase());
+            }
+            
+            // Update select value
+            themeToggle.value = theme;
+            
+            // Save to localStorage
+            localStorage.setItem('theme', theme);
+        }
 
-          const themeToggle = document.getElementById('theme');
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'SystemDefault';
+        applyTheme(savedTheme);
 
-          function applyTheme(theme) {
-               document.body.classList.remove('bg-dark-theme', 'bg-light-theme');
+        // Event listener for theme changes
+        themeToggle.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+        });
 
-               if (theme === 'SystemDefault') {
-                    // Check system preference
-                    const systemPrefersDefault = window.matchMedia('(prefers-color-scheme: light)').matches;
-                    document.body.classList.add(systemPrefersDefault ? 'bg-light-theme' : 'bg-dark-theme');
-                    document.body.classList.add(systemPrefersDefault ? 'title-light' : 'title-dark');
-               } else {
-                    document.body.classList.add(theme === 'Dark' ? 'bg-dark-theme' : 'bg-light-theme');
-               }
-          }
-
-          const savedTheme = localStorage.getItem('theme') || 'SystemDefault';
-          themeToggle.value = savedTheme;
-          applyTheme(savedTheme);
-          themeToggle.addEventListener('change', (e) => {
-               const selectedTheme = e.target.value;
-               localStorage.setItem('theme', selectedTheme);
-               applyTheme(selectedTheme);
-          });
-
-          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-               if (themeToggle.value === 'SystemDefault') {
-                    applyTheme('SystemDefault');
-               }
-          });
-
-     </script>
-
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (themeToggle.value === 'SystemDefault') {
+                applyTheme('SystemDefault');
+            }
+        });
+    </script>
 </body>
 
 </html>
