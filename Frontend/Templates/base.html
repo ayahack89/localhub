@@ -70,10 +70,13 @@
         background-color: var(--surface);
         border-bottom: 1px solid var(--border);
         padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .navbar img {
-        height: 32px;
+        height: 70px;
         width: auto;
     }
 
@@ -102,19 +105,36 @@
     }
 
     .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.08);
+        background-color: rgba(122, 122, 122, 0.1);
     }
 
-    /* Theme Selector */
-    .theme-select {
+    /* --- Theme Toggle Button (No Animation) --- */
+    .theme-toggle-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         background-color: var(--surface);
         color: var(--text);
         border: 1px solid var(--border);
         border-radius: 6px;
-        padding: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.875rem;
         cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+        width: 110px; 
+        justify-content: flex-start;
     }
+
+    .theme-toggle-btn:hover {
+        background-color: var(--code-bg);
+        border-color: var(--text-secondary);
+    }
+
+    .theme-toggle-btn i {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+    }
+
 
     /* Repository List */
     .repo-header {
@@ -287,23 +307,20 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+   <nav class="navbar">
         <div class="logo">
             <img src="{{ url_for('static', filename='img/local-hub-logo.png') }}" alt="Local Hub Logo">
         </div>
         <ul class="nav-ul">
             <li>
                 <a href="{{ url_for('home') }}" class="nav-link">
-                    <i class="ri-folder-cloud-line"></i>
+                    <i class="ri-folder-line"></i>
                     <span>Root Directory</span>
                 </a>
             </li>
             <li>
-                <select name="theme" id="theme" class="theme-select">
-                    <option value="SystemDefault">System Default</option>
-                    <option value="Light">Light</option>
-                    <option value="Dark">Dark</option>
-                </select>
+                <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle theme">
+                    </button>
             </li>
         </ul>
     </nav>
@@ -313,42 +330,55 @@
     </div>
 
     <script>
-        const themeToggle = document.getElementById('theme');
-        const body = document.body;
+        // Wrap the entire script in a DOMContentLoaded listener to ensure the HTML is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const body = document.body;
 
-        function applyTheme(theme) {
-            // Remove any existing theme classes
-            body.removeAttribute('data-theme');
-            
-            if (theme === 'SystemDefault') {
-                // Check system preference
+            // Function to apply a theme and update the button
+            function setTheme(theme) {
+                // Set the data-theme attribute on the body
+                body.setAttribute('data-theme', theme);
+                // Save the user's preference in localStorage
+                localStorage.setItem('theme', theme);
+
+                // Update the button's icon and text to show the *next* state
+                if (theme === 'dark') {
+                    themeToggleBtn.innerHTML = `<i class="ri-sun-line"></i> <span>Light</span>`;
+                } else {
+                    themeToggleBtn.innerHTML = `<i class="ri-moon-line"></i> <span>Dark</span>`;
+                }
+            }
+
+            // Click event listener for the button
+            themeToggleBtn.addEventListener('click', () => {
+                // Get the current theme from the body attribute
+                const currentTheme = body.getAttribute('data-theme');
+                // Determine the new theme by toggling the current one
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                // Apply the new theme
+                setTheme(newTheme);
+            });
+
+            // Function to set the initial theme when the page loads
+            function initializeTheme() {
+                // Check for a saved theme in localStorage
+                const savedTheme = localStorage.getItem('theme');
+                // Check the user's OS preference
                 const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                body.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
-            } else {
-                body.setAttribute('data-theme', theme.toLowerCase());
+
+                // 1. If a theme is saved in localStorage, use it.
+                // 2. Otherwise, if the OS preference is dark, use dark theme.
+                // 3. Otherwise, default to light theme.
+                if (savedTheme) {
+                    setTheme(savedTheme);
+                } else {
+                    setTheme(systemPrefersDark ? 'dark' : 'light');
+                }
             }
-            
-            // Update select value
-            themeToggle.value = theme;
-            
-            // Save to localStorage
-            localStorage.setItem('theme', theme);
-        }
 
-        // Initialize theme
-        const savedTheme = localStorage.getItem('theme') || 'SystemDefault';
-        applyTheme(savedTheme);
-
-        // Event listener for theme changes
-        themeToggle.addEventListener('change', (e) => {
-            applyTheme(e.target.value);
-        });
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if (themeToggle.value === 'SystemDefault') {
-                applyTheme('SystemDefault');
-            }
+            // Run the initialization function
+            initializeTheme();
         });
     </script>
 </body>
