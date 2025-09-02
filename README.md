@@ -8,6 +8,8 @@ LocalHub is an open-source framework that provides developers with complete cont
 
 ## Overview
 
+![LocalHub saas view](assets/images/local-hub-view.png)
+
 The vision behind LocalHub is simple yet powerful: give developers full control over their code, credentials, and repositories without expensive storage subscriptions, premium features, or third-party restrictions.
 
 LocalHub prioritises security, making it an ideal solution for private repositories. Instead of relying on centralized cloud services, your code remains on your own system, ensuring complete ownership and privacy. The framework operates through an Ngrok-exposed local server, allowing secure repository sharing with your team through a one-time authentication process.
@@ -15,6 +17,8 @@ LocalHub prioritises security, making it an ideal solution for private repositor
 This approach ensures that access is temporary and entirely under your control. If you detect any suspicious activity, you can instantly shut down access, protecting your data. LocalHub is more than just a hosting tool—it's a customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique needs.
 
 ## Architecture
+
+![LocalHub architecture](assets/images/localhub.architecture.diagram.jpg)
 
 LocalHub follows a lightweight yet powerful architecture that runs within a virtual environment on your local system. The architecture consists of two key components:
 
