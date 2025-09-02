@@ -2,13 +2,13 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ayahack89/localhub/blob/main/LICENSE)
 
-LocalHub is an open-source framework designed to provide developers complete control over their code repositories while enabling secure team collaboration. Built with privacy as a core principle, this framework allows users to store, view, and share repositories without relying on third-party cloud services.
+LocalHub is an open-source framework that provides developers with complete control over their code repositories while enabling secure team collaboration. Built with privacy as a core principle, this framework allows users to store, view, and share repositories without relying on third-party cloud services.
 
 ## Overview
 
 The vision behind LocalHub is simple yet powerful: give developers full control over their code, credentials, and repositories without expensive storage subscriptions, premium features, or third-party restrictions.
 
-LocalHub prioritizes security, making it an ideal solution for private repositories. Instead of relying on centralized cloud services, your code remains on your own system, ensuring complete ownership and privacy. The framework operates through an Ngrok-exposed local server, allowing secure repository sharing with your team through a one-time authentication process.
+LocalHub prioritises security, making it an ideal solution for private repositories. Instead of relying on centralized cloud services, your code remains on your own system, ensuring complete ownership and privacy. The framework operates through an Ngrok-exposed local server, allowing secure repository sharing with your team through a one-time authentication process.
 
 This approach ensures that access is temporary and entirely under your control. If you detect any suspicious activity, you can instantly shut down access, protecting your data. LocalHub is more than just a hosting tool—it's a customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique needs.
 
@@ -171,7 +171,7 @@ LocalHub is in active development and welcomes contributions from the community.
 3. Make your changes
 4. Submit a pull request
 
-Please read our contributing guidelines and code of conduct before submitting contributions.
+Please read our contributing guidelines and code of conduct before you submit your contributions.
 
 ## Community
 
@@ -195,10 +195,5 @@ LocalHub is continuously evolving. Current development focuses include:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
 
-Thank you to everyone using LocalHub, contributing to its development, and supporting the concept of decentralized, secure development environments. Your participation shapes the future of developer-controlled repository management.
-
----
-
-**LocalHub** - Take back control of your code without compromises.
+> **LocalHub** - Keep It Local, Keep It Secure
