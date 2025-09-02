@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ayahack89/localhub/blob/main/LICENSE)
 
+![LocalHub Logo](assets/images/local-hub-logo.png)
+
 LocalHub is an open-source framework that provides developers with complete control over their code repositories while enabling secure team collaboration. Built with privacy as a core principle, this framework allows users to store, view, and share repositories without relying on third-party cloud services.
 
 ## Overview
