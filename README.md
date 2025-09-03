@@ -1,20 +1,20 @@
-# LocalHub
+# Local Hub
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ayahack89/localhub/blob/main/LICENSE)
 
 ![LocalHub Logo](assets/images/local-hub-logo.png)
 
-LocalHub is an open-source framework that provides developers with complete control over their code repositories while enabling secure team collaboration. Built with privacy as a core principle, this framework allows users to store, view, and share repositories without relying on third-party cloud services.
+LocalHub is an opensource framework that provides developers with complete control over their code repositories while enabling secure team collaboration. Built with privacy as a core principle, this framework allows users to store, view, and share repositories without relying on third-party cloud services.
 
 ## Overview
 
 The vision behind LocalHub is simple yet powerful: give developers full control over their code, credentials, and repositories without expensive storage subscriptions, premium features, or third-party restrictions.
 
-LocalHub prioritises security, making it an ideal solution for private repositories. Instead of relying on centralized cloud services, your code remains on your own system, ensuring complete ownership and privacy. The framework operates through an Ngrok-exposed local server, allowing secure repository sharing with your team through a one-time authentication process.
+LocalHub prioritises security, making it an ideal solution for private repositories. Instead of relying on centralized cloud services, your code remains on your own system, ensuring complete ownership and privacy. The framework operates through an Ngrok-exposed local server, allowing secure repository sharing with your team, you can also use a one-time authentication process for better security.
 
 ![LocalHub saas view](assets/images/local-hub-view.png)
 
-This approach ensures that access is temporary and entirely under your control. If you detect any suspicious activity, you can instantly shut down access, protecting your data. LocalHub is more than just a hosting tool—it's a customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique needs. fuck
+This approach ensures that access is temporary and entirely under your control. If you detect any suspicious activity, you can instantly shut down access, protecting your data. LocalHub is more than just a hosting tool—it's a customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique needs.
 
 ## Architecture
 
@@ -38,7 +38,7 @@ The backend and frontend work together efficiently, ensuring a smooth, secure, a
 
 ### Core Capabilities
 - **Full Code Ownership**: Your repositories stay on your own system, ensuring 100% data control without third-party dependencies
-- **Subscription-Free**: No monthly fees or premium features—complete access without restrictions
+- **Subscription-Free**: No monthly fees or premium features, complete access without restrictions
 - **Private Repository Sharing**: Share repositories securely using Ngrok-powered temporary URLs with optional authentication
 - **Virtual Environment Stability**: Runs in an isolated Python environment, preventing dependency conflicts
 - **Framework Design**: Built as an extendable framework rather than a fixed application
@@ -56,7 +56,7 @@ Before installation, ensure your system meets the following requirements:
 
 - **Python**: Version 3.12.4 or later
 - **Flask**: Python web framework
-- **Ngrok**: For secure tunneling (included in repository)
+- **Ngrok**: For secure tunnelling (included in repository)
 - **Sufficient Storage**: Based on your repository size (avoid using C:\ drive)
 
 ## Installation
@@ -170,7 +170,7 @@ activate
 
 ## Contributing
 
-LocalHub is in active development and welcomes contributions from the community. To contribute:
+Local Hub is in active development and welcomes contributions from the community. To contribute:
 
 1. Fork the repository
 2. Create a feature branch
@@ -187,15 +187,6 @@ Join our growing community of developers who believe in code ownership and priva
 - **Discussions**: Share ideas and get help from other users
 - **Documentation**: Help improve our guides and tutorials
 
-## Roadmap
-
-LocalHub is continuously evolving. Current development focuses include:
-
-- Enhanced security features
-- Improved user interface
-- Better performance optimization
-- Extended customization options
-- Mobile-responsive design
 
 ## License
 
