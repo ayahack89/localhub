@@ -28,10 +28,8 @@ Please go through each item and ensure all are completed:
 -  Commit messages are clear and descriptive
 -  Linked to relevant issues or discussions (if applicable)
 -  Security and privacy considerations have been addressed
--  Changes work correctly with Ngrok tunneling functionality
+-  Changes work correctly with Ngrok tunnelling functionality
 
 Thanks again for contributing to LocalHub. Let's make secure, self-hosted code collaboration better, one commit at a time.
 
-Thanks again for contributing to LocalHub. Let's make secure, self-hosted code collaboration better, one commit at a time.
 
-— The LocalHub TeamThanks again for contributing to LocalHub. Let's make secure, self-hosted code collaboration better, one commit at a time.
