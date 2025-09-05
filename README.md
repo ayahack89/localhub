@@ -11,12 +11,12 @@ The framework operates through an Ngrok-exposed local server, facilitating secur
 
 ![LocalHub saas view](assets/images/local-hub-view.png)
 
-LocalHub transcends being merely a hosting tool; it's a fully customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique workflow requirements.
+Local Hub transcends being merely a hosting tool; it's a fully customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique workflow requirements.
 
 
 ## Architecture
 
-LocalHub employs a lightweight yet powerful architecture that operates within a virtual environment on your local system. The architecture consists of two meticulously designed components that work in harmony:
+Local Hub employs a lightweight yet powerful architecture that operates within a virtual environment on your local system. The architecture consists of two meticulously designed components that work in harmony:
 
 ![LocalHub architecture](assets/images/localhub.architecture.diagram.jpg)
 
@@ -61,7 +61,7 @@ Local Hub gives you the complete GitHub experience on your own system. It's buil
 
 ![LocalHub feature1](assets/images/preview-1.gif)
 
-It also works with all the files you use. Code is displayed with proper coloring to make it easy to read, and everything from documents to images looks great and is easy to view. No matter what you're working on, Local Hub presents it in a clean, logical, and visual way, so your entire project is clear and accessible in one place.
+It also works with all the files you use. Code is displayed with proper format to make it easy to read, and everything from documents to images looks great and is easy to view. No matter what you're working on, Local Hub presents it in a clean, logical, and visual way, so your entire project is clear and accessible in one place.
 
 ![LocalHub feature2](assets/images/preview-2.gif)
 
