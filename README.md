@@ -1,4 +1,5 @@
-# Local Hub: Keep It Local, Keep It Secure. 
+# Local Hub 
+`Keep It Local.` `Keep It Secure.` 
 
 Local Hub is an innovative open-source framework designed to give developers complete `control` over their `code` repositories while enabling secure team collaboration. Built with `privacy` as its foundational principle, this powerful solution allows you to store, manage, view, and share repositories without depending on third-party cloud services or expensive subscriptions.
 
