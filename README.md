@@ -8,7 +8,6 @@ The vision behind Local Hub is both simple and transformative: empower developer
 
 The framework operates through an Ngrok-exposed local server, facilitating secure repository sharing with your team members. You can implement optional one-time authentication processes for enhanced security measures. This approach guarantees that access remains temporary and entirely under your control. Should you detect any suspicious activity, you can immediately terminate access, protecting your valuable intellectual property.
 
-![LocalHub saas view](assets/images/local-hub-view.png)
 
 Local Hub transcends being merely a hosting tool; it's a fully customizable framework that provides essential repository management features while allowing developers to extend and adapt it to their unique workflow requirements.
 
