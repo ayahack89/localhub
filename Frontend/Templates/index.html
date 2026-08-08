@@ -1,21 +1,64 @@
 {% extends "base.html" %}
-{% block title %}Local Hub - Keep It Local, Keep It Secure{% endblock %}
+
+{% block title %}
+LocalHub - Repository
+{% endblock %}
+
 {% block content %}
+
 <div class="repo-header">
-    <h3>Repositories</h3>
+
+    {% if current_path %}
+        <h2>{{ current_path }}</h2>
+    {% else %}
+        <h2>Repositories</h2>
+    {% endif %}
+
 </div>
 
+
 <div class="repo-list">
-    {% for item in files_and_dir %}
-    <div class="repo-item">
-        <i class="repo-icon ri-folder-6-fill"></i>
-        <a href="{{ item }}" class="repo-link">{{ item }}</a>
-    </div>
+
+    {% for item in items %}
+
+        <div class="repo-item">
+
+            {% if item.is_directory %}
+
+                <span class="repo-icon">📁</span>
+
+                <a
+                    href="{{ url_for('browse_repository', relative_path=item.relative_path) }}"
+                    class="repo-link"
+                >
+                    {{ item.name }}
+                </a>
+
+            {% else %}
+
+                <span class="repo-icon">📄</span>
+
+                <a
+                    href="{{ url_for('view_file', relative_path=item.relative_path) }}"
+                    class="repo-link"
+                >
+                    {{ item.name }}
+                </a>
+
+            {% endif %}
+
+        </div>
+
     {% else %}
-    <div class="empty-state">
-        <i class="ri-folder-open-line" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-        <p>No repositories available</p>
-    </div>
+
+        <div class="empty-state">
+
+            <p>This directory is empty.</p>
+
+        </div>
+
     {% endfor %}
+
 </div>
+
 {% endblock %}

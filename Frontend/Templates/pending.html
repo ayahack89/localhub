@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waiting for Approval</title>
+</head>
+
+<body>
+
+    <h1>LocalHub</h1>
+
+    <h2>Waiting for approval</h2>
+
+    <p>Hello {{ username }}</p>
+
+    <p>
+        Your access request has been sent to the repository owner.
+    </p>
+
+    <p>
+        Waiting for approval...
+    </p>
+
+    <script>
+        async function checkRequestStatus() {
+
+            try {
+
+                const response = await fetch("/api/request-status");
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.status === "approved") {
+
+                    window.location.href = "/";
+
+                } else if (data.status === "rejected") {
+
+                    window.location.href = "/";
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to check request status:",
+                    error
+                );
+
+            }
+        }
+
+        setInterval(checkRequestStatus, 3000);
+    </script>
+
+</body>
+</html>

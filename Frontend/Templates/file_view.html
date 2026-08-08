@@ -1,50 +1,70 @@
 {% extends "base.html" %}
-{% block title %}Local Hub - File: {{ file_name }}{% endblock %}
+
+{% block title %}
+LocalHub - {{ file_name }}
+{% endblock %}
+
 {% block content %}
+
 <div class="file-header">
+
     <div class="breadcrumb">
-        <a href="{{ url_for('home') }}">Repositories</a>
-        <i class="ri-arrow-right-s-line"></i>
-        <a href="{{ request.referrer or url_for('repo_list') }}">Previous</a>
-        <i class="ri-arrow-right-s-line"></i>
+
+        <a href="{{ url_for('dashboard') }}">
+            Repositories
+        </a>
+
+        <span> / </span>
+
         <span>{{ file_name }}</span>
+
     </div>
-    <a href="{{ request.referrer or url_for('repo_list') }}" class="back-btn">
-        <i class="ri-arrow-go-back-line"></i>
-        Back
-    </a>
+
 </div>
+
 
 <div class="code-container">
+
     <div class="code-header">
+
         <span>{{ file_name }}</span>
-        <button class="copy-btn" onclick="copyContent()">
-            <i class="ri-file-copy-line" id="copy-icon"></i>
+
+        <button
+            class="copy-btn"
+            onclick="copyContent()"
+        >
             Copy
         </button>
+
     </div>
+
+
     <pre><code id="copy-text">{{ content }}</code></pre>
+
 </div>
 
+
 <script>
-    const copyContent = async () => {
-        const copyText = document.getElementById('copy-text').innerText;
-        const copyIcon = document.getElementById('copy-icon');
-        
-        try {
-            await navigator.clipboard.writeText(copyText);
-            // Change icon to indicate success
-            copyIcon.classList.remove('ri-file-copy-line');
-            copyIcon.classList.add('ri-file-copy-fill');
-            
-            // Revert after 2 seconds
-            setTimeout(() => {
-                copyIcon.classList.remove('ri-file-copy-fill');
-                copyIcon.classList.add('ri-file-copy-line');
-            }, 2000);
-        } catch (error) {
-            console.error("Failed to copy:", error);
-        }
-    };
+
+async function copyContent() {
+
+    const content =
+        document.getElementById("copy-text").innerText;
+
+    try {
+
+        await navigator.clipboard.writeText(content);
+
+        alert("Copied!");
+
+    } catch (error) {
+
+        console.error("Copy failed:", error);
+
+    }
+
+}
+
 </script>
+
 {% endblock %}

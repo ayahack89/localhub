@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LocalHub Admin Login</title>
+</head>
+
+<body>
+
+    <h1>LocalHub</h1>
+
+    <h2>Owner Login</h2>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Owner password"
+            required
+        >
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+</body>
+</html>

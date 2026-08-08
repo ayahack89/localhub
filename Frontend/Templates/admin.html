@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>LocalHub Admin</title>
+</head>
+
+<body>
+
+    <h1>LocalHub Admin</h1>
+
+    <h2>Pending Access Requests</h2>
+
+    {% if requests %}
+
+        {% for req in requests %}
+
+            <div>
+
+                <p>
+                    Username: {{ req.username }}
+                </p>
+
+                <a href="/admin/approve/{{ req.id }}">
+                    <button>YES - Approve</button>
+                </a>
+
+                <a href="/admin/reject/{{ req.id }}">
+                    <button>NO - Reject</button>
+                </a>
+
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No pending requests.</p>
+
+    {% endif %}
+
+</body>
+
+</html>
