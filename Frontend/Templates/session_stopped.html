@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}LocalHub - Collaboration Session Ended{% endblock %}
+
+{% block content %}
+
+<div class="auth-wrapper">
+  <div class="auth-card" style="border-color: var(--border-subtle);">
+    <div style="width: 56px; height: 56px; background: rgba(100, 116, 139, 0.15); color: var(--text-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem;">
+      <i class="ri-stop-circle-line"></i>
+    </div>
+    
+    <h1 class="auth-title" style="color: var(--text-muted);">Session Terminated</h1>
+    <p class="auth-subtitle">
+      This temporary LocalHub collaboration session for <strong style="color: var(--text-main);">{{ repo_name }}</strong> has been stopped by the repository owner.
+    </p>
+
+    <div style="background: var(--bg-dark); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; font-size: 0.85rem; color: var(--text-dim); text-align: center;">
+      LocalHub sessions are temporary. All active tunnels and public collaboration routes for this session are now offline.
+    </div>
+  </div>
+</div>
+
+{% endblock %}

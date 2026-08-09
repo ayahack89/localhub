@@ -1,70 +1,59 @@
 {% extends "base.html" %}
 
-{% block title %}
-LocalHub - {{ file_name }}
-{% endblock %}
+{% block title %}LocalHub - {{ file_name }}{% endblock %}
 
 {% block content %}
 
-<div class="file-header">
-
-    <div class="breadcrumb">
-
-        <a href="{{ url_for('dashboard') }}">
-            Repositories
-        </a>
-
-        <span> / </span>
-
-        <span>{{ file_name }}</span>
-
-    </div>
-
+<!-- BREADCRUMB -->
+<div class="repo-breadcrumb">
+  <a href="{{ url_for('home') }}">
+    <i class="ri-folder-shared-line" style="color: var(--primary);"></i> {{ repo_name }}
+  </a>
+  {% if relative_path %}
+    {% set parts = relative_path.split('/') %}
+    {% set accumulated = [] %}
+    {% for part in parts[:-1] %}
+      {% set _ = accumulated.append(part) %}
+      <span class="separator">/</span>
+      <a href="{{ url_for('browse_repository', relative_path='/'.join(accumulated)) }}">{{ part }}</a>
+    {% endfor %}
+    <span class="separator">/</span>
+    <span style="color: var(--text-main); font-weight: 600;">{{ file_name }}</span>
+  {% endif %}
 </div>
 
-
-<div class="code-container">
-
-    <div class="code-header">
-
-        <span>{{ file_name }}</span>
-
-        <button
-            class="copy-btn"
-            onclick="copyContent()"
-        >
-            Copy
-        </button>
-
+<!-- CODE BOX -->
+<div class="code-box">
+  <div class="code-box-header">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <i class="ri-file-code-line" style="color: var(--accent-cyan);"></i>
+      <span style="font-weight: 600; color: var(--text-main);">{{ file_name }}</span>
     </div>
+    <div style="display: flex; gap: 0.5rem;">
+      <button class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" onclick="copyCode()">
+        <i class="ri-file-copy-line"></i> Copy Code
+      </button>
+      <a href="{{ url_for('download_file', relative_path=relative_path) }}" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+        <i class="ri-download-line"></i> Raw / Download
+      </a>
+    </div>
+  </div>
 
-
-    <pre><code id="copy-text">{{ content }}</code></pre>
-
+  <div class="code-content">
+    <pre><code id="file-code-text">{{ content }}</code></pre>
+  </div>
 </div>
-
 
 <script>
-
-async function copyContent() {
-
-    const content =
-        document.getElementById("copy-text").innerText;
-
-    try {
-
-        await navigator.clipboard.writeText(content);
-
-        alert("Copied!");
-
-    } catch (error) {
-
-        console.error("Copy failed:", error);
-
-    }
-
+async function copyCode() {
+  const codeText = document.getElementById("file-code-text").innerText;
+  try {
+    await navigator.clipboard.writeText(codeText);
+    alert("Code copied to clipboard!");
+  } catch (err) {
+    console.error("Copy failed:", err);
+  }
 }
-
 </script>
 
 {% endblock %}

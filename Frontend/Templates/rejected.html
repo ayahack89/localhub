@@ -1,21 +1,29 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
+{% block title %}LocalHub - Access Rejected{% endblock %}
 
-<head>
+{% block content %}
 
-    <title>LocalHub - Access Rejected</title>
-
-</head>
-
-<body>
-
-    <h1>Access Rejected</h1>
-
-    <p>
-        Your request to access this repository was rejected.
+<div class="auth-wrapper">
+  <div class="auth-card" style="border-color: rgba(239, 68, 68, 0.4);">
+    <div style="width: 56px; height: 56px; background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem;">
+      <i class="ri-close-circle-line"></i>
+    </div>
+    
+    <h1 class="auth-title" style="color: var(--accent-red);">Access Request Rejected</h1>
+    <p class="auth-subtitle">
+      The repository owner declined your request to access <strong style="color: var(--text-main);">{{ repo_name }}</strong>.
     </p>
 
-</body>
+    <div style="background: var(--bg-dark); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: left;">
+      <div style="font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;">What now?</div>
+      If you believe this was in error, please contact the repository owner directly to request a new session link.
+    </div>
 
-</html>
+    <a href="{{ url_for('login') }}" class="btn btn-secondary" style="width: 100%;">
+      <i class="ri-refresh-line"></i> Submit New Request
+    </a>
+  </div>
+</div>
+
+{% endblock %}

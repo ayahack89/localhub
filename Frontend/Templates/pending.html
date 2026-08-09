@@ -1,60 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Waiting for Approval</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}LocalHub - Waiting for Approval{% endblock %}
 
-    <h1>LocalHub</h1>
+{% block content %}
 
-    <h2>Waiting for approval</h2>
-
-    <p>Hello {{ username }}</p>
-
-    <p>
-        Your access request has been sent to the repository owner.
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="spinner-pulse"></div>
+    <h2 class="auth-title" style="font-size: 1.35rem;">Waiting for Owner Approval</h2>
+    <p class="auth-subtitle" style="margin-bottom: 1.5rem;">
+      Hello <strong style="color: var(--text-main);">{{ username }}</strong>, your access request for <strong style="color: var(--accent-cyan);">{{ repo_name }}</strong> was submitted.
     </p>
 
-    <p>
-        Waiting for approval...
-    </p>
+    <div style="background: var(--bg-dark); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+      <i class="ri-radar-line" style="color: var(--accent-yellow);"></i> Checking status... This screen will automatically update when the owner responds.
+    </div>
 
-    <script>
-        async function checkRequestStatus() {
+    <div style="font-size: 0.78rem; color: var(--text-dim);">
+      You do not need to refresh this page.
+    </div>
+  </div>
+</div>
 
-            try {
+<script>
+async function checkRequestStatus() {
+  try {
+    const response = await fetch("/api/request-status");
+    if (!response.ok) {
+      if (response.status === 410) {
+        window.location.href = "/";
+      }
+      return;
+    }
+    const data = await response.json();
+    if (data.status === "approved") {
+      window.location.href = "/";
+    } else if (data.status === "rejected") {
+      window.location.href = "/rejected";
+    }
+  } catch (err) {
+    console.error("Unable to check status:", err);
+  }
+}
 
-                const response = await fetch("/api/request-status");
+setInterval(checkRequestStatus, 2000);
+</script>
 
-                if (!response.ok) {
-                    return;
-                }
-
-                const data = await response.json();
-
-                if (data.status === "approved") {
-
-                    window.location.href = "/";
-
-                } else if (data.status === "rejected") {
-
-                    window.location.href = "/";
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Unable to check request status:",
-                    error
-                );
-
-            }
-        }
-
-        setInterval(checkRequestStatus, 3000);
-    </script>
-
-</body>
-</html>
+{% endblock %}

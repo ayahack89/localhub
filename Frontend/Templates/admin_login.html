@@ -1,33 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LocalHub Admin Login</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}LocalHub - Owner Login{% endblock %}
 
-    <h1>LocalHub</h1>
+{% block content %}
 
-    <h2>Owner Login</h2>
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="brand-icon" style="width: 48px; height: 48px; font-size: 1.3rem; margin: 0 auto 1.25rem; background: linear-gradient(135deg, var(--accent-cyan), var(--primary));">
+      <i class="ri-shield-keyhole-line"></i>
+    </div>
+    <h1 class="auth-title">Owner Dashboard</h1>
+    <p class="auth-subtitle">
+      Enter repository owner authentication password or session token.
+    </p>
 
     {% if error %}
-        <p>{{ error }}</p>
+      <div style="background: rgba(239, 68, 68, 0.15); color: var(--accent-red); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem;">
+        {{ error }}
+      </div>
     {% endif %}
 
-    <form method="POST">
-
-        <input
-            type="password"
-            name="password"
-            placeholder="Owner password"
-            required
+    <form method="POST" action="{{ url_for('admin_login') }}">
+      <div class="form-group">
+        <label class="form-label" for="password">Owner Password / Secret</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          class="form-control" 
+          placeholder="Enter owner password" 
+          required 
+          autofocus
         >
+      </div>
 
-        <button type="submit">
-            Login
-        </button>
-
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+        <i class="ri-login-box-line"></i> Authenticate Dashboard
+      </button>
     </form>
+  </div>
+</div>
 
-</body>
-</html>
+{% endblock %}

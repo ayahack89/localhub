@@ -1,0 +1,3 @@
+recursive-include Frontend/Templates *
+recursive-include Backend/static *
+include README.md LICENSE

@@ -1,35 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LocalHub - Request Access</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}LocalHub - Request Repository Access{% endblock %}
 
-    <h1>LocalHub</h1>
+{% block content %}
 
-    <h2>Request Access</h2>
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="brand-icon" style="width: 48px; height: 48px; font-size: 1.3rem; margin: 0 auto 1.25rem;">LH</div>
+    <h1 class="auth-title">LocalHub Access</h1>
+    <p class="auth-subtitle">
+      The owner has shared a temporary LocalHub collaboration session for <strong style="color: var(--accent-cyan);">{{ repo_name }}</strong>.
+    </p>
 
-    <form method="POST">
+    {% if error %}
+      <div style="background: rgba(239,68,68,0.15); color: var(--accent-red); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem;">
+        {{ error }}
+      </div>
+    {% endif %}
 
-        <label>Your Name</label>
-
-        <br>
-
-        <input
-            type="text"
-            name="username"
-            placeholder="Enter your name"
-            required
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label class="form-label" for="username">Your Name / Collaborator Identity</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          class="form-control" 
+          placeholder="e.g. Alex (Frontend Dev)" 
+          required 
+          autofocus
         >
+      </div>
 
-        <br><br>
-
-        <button type="submit">
-            Request Access
-        </button>
-
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+        <i class="ri-lock-unlock-line"></i> Request Access
+      </button>
     </form>
 
-</body>
-</html>
+    <div style="margin-top: 1.5rem; font-size: 0.78rem; color: var(--text-dim);">
+      Sessions are temporary. Once access is approved by the repository owner, you will be able to browse and clone this repository.
+    </div>
+  </div>
+</div>
+
+{% endblock %}

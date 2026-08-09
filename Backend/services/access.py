@@ -1,5 +1,5 @@
 import uuid
-
+from datetime import datetime
 
 # ============================================================
 # ACCESS REQUEST STORAGE
@@ -13,13 +13,13 @@ access_requests = {}
 # ============================================================
 
 def create_request(username):
-
     request_id = str(uuid.uuid4())
 
     access_requests[request_id] = {
         "id": request_id,
         "username": username,
         "status": "pending",
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     return request_id
@@ -30,7 +30,6 @@ def create_request(username):
 # ============================================================
 
 def get_request(request_id):
-
     return access_requests.get(request_id)
 
 
@@ -39,13 +38,13 @@ def get_request(request_id):
 # ============================================================
 
 def approve_request(request_id):
-
     request = access_requests.get(request_id)
 
     if not request:
         return False
 
     request["status"] = "approved"
+    request["approved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     return True
 
@@ -55,25 +54,52 @@ def approve_request(request_id):
 # ============================================================
 
 def reject_request(request_id):
-
     request = access_requests.get(request_id)
 
     if not request:
         return False
 
     request["status"] = "rejected"
+    request["rejected_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     return True
 
 
 # ============================================================
-# GET ALL PENDING REQUESTS
+# GET PENDING REQUESTS
 # ============================================================
 
 def get_pending_requests():
-
     return [
         request
         for request in access_requests.values()
         if request["status"] == "pending"
     ]
+
+
+# ============================================================
+# GET APPROVED REQUESTS
+# ============================================================
+
+def get_approved_requests():
+    return [
+        request
+        for request in access_requests.values()
+        if request["status"] == "approved"
+    ]
+
+
+# ============================================================
+# GET ALL REQUESTS
+# ============================================================
+
+def get_all_requests():
+    return list(access_requests.values())
+
+
+# ============================================================
+# CLEAR ALL REQUESTS (FOR NEW SESSION)
+# ============================================================
+
+def clear_all_requests():
+    access_requests.clear()

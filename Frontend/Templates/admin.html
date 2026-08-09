@@ -1,46 +1,277 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>LocalHub Admin</title>
-</head>
+{% block title %}LocalHub - Owner Command Center{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>LocalHub Admin</h1>
+<!-- SESSION SHARE BANNER -->
+<div class="share-banner">
+  <div class="share-info">
+    <span class="share-label"><i class="ri-radar-line"></i> Temporary Share URL</span>
+    <div class="share-url-box" id="share-url-text">
+      {{ session_info.public_url or session_info.local_url }}
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+      Collaborators run: <code style="color: var(--accent-cyan); font-family: var(--font-mono);">localhub clone {{ session_info.public_url or session_info.local_url }}</code>
+    </div>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <button class="btn btn-primary" onclick="copyShareUrl()">
+      <i class="ri-file-copy-line"></i> Copy Share Link
+    </button>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary" target="_blank">
+      <i class="ri-external-link-line"></i> Open Repo
+    </a>
+  </div>
+</div>
 
-    <h2>Pending Access Requests</h2>
+<!-- OVERVIEW STATS GRID -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+  
+  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
+    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">SESSION STATUS</div>
+    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-green); margin-top: 0.25rem;">
+      <span class="badge-live">LIVE</span>
+    </div>
+  </div>
 
-    {% if requests %}
+  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
+    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">PENDING REQUESTS</div>
+    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-yellow); margin-top: 0.25rem;" id="pending-count-stat">
+      {{ requests|length }}
+    </div>
+  </div>
 
+  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
+    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">APPROVED COLLABORATORS</div>
+    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-cyan); margin-top: 0.25rem;" id="approved-count-stat">
+      {{ approved_requests|length }}
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
+    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">PROJECT DIRECTORY</div>
+    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-top: 0.4rem; font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      {{ session_info.repo_name }}
+    </div>
+  </div>
+
+</div>
+
+<!-- TWO-COLUMN WORKFLOW GRID -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+  
+  <!-- LEFT: PENDING REQUESTS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="ri-user-add-line" style="color: var(--accent-yellow);"></i> Pending Access Requests
+      </div>
+      <span class="badge-live" style="background: rgba(245, 158, 11, 0.12); color: var(--accent-yellow); border-color: rgba(245, 158, 11, 0.3);">
+        Auto-Polling
+      </span>
+    </div>
+
+    <div id="pending-requests-container">
+      {% if requests %}
         {% for req in requests %}
-
-            <div>
-
-                <p>
-                    Username: {{ req.username }}
-                </p>
-
-                <a href="/admin/approve/{{ req.id }}">
-                    <button>YES - Approve</button>
-                </a>
-
-                <a href="/admin/reject/{{ req.id }}">
-                    <button>NO - Reject</button>
-                </a>
-
+          <div class="request-item" id="req-card-{{ req.id }}">
+            <div class="request-user">
+              <i class="ri-user-line" style="color: var(--accent-cyan);"></i>
+              <div>
+                <div>{{ req.username }}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Requested: {{ req.timestamp }}</div>
+              </div>
             </div>
-
-            <hr>
-
+            <div class="request-actions">
+              <button class="btn btn-success" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('approve', '{{ req.id }}')">
+                <i class="ri-check-line"></i> Approve
+              </button>
+              <button class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('reject', '{{ req.id }}')">
+                <i class="ri-close-line"></i> Reject
+              </button>
+            </div>
+          </div>
         {% endfor %}
+      {% else %}
+        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+          <i class="ri-inbox-line" style="font-size: 2.5rem; color: var(--text-dim); display: block; margin-bottom: 0.5rem;"></i>
+          No pending access requests.
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
+            Collaborators opening your temporary URL will appear here.
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 
-    {% else %}
+  <!-- RIGHT: APPROVED COLLABORATORS & ACTIVITY -->
+  <div>
+    <!-- APPROVED COLLABORATORS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="ri-team-line" style="color: var(--accent-green);"></i> Approved Collaborators
+        </div>
+      </div>
 
-        <p>No pending requests.</p>
+      <div id="approved-requests-container">
+        {% if approved_requests %}
+          {% for req in approved_requests %}
+            <div class="request-item" style="border-color: rgba(16, 185, 129, 0.3);">
+              <div class="request-user">
+                <i class="ri-checkbox-circle-line" style="color: var(--accent-green);"></i>
+                <div>
+                  <div>{{ req.username }}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Approved: {{ req.approved_at or req.timestamp }}</div>
+                </div>
+              </div>
+              <span class="badge-live" style="font-size: 0.7rem;">Active</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div style="text-align: center; padding: 1.5rem 1rem; color: var(--text-muted); font-size: 0.85rem;">
+            No collaborators approved yet.
+          </div>
+        {% endif %}
+      </div>
+    </div>
 
-    {% endif %}
+    <!-- ACTIVITY LOG -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="ri-history-line" style="color: var(--accent-cyan);"></i> Activity Feed
+        </div>
+      </div>
 
-</body>
+      <div id="activity-feed-container" style="max-height: 200px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.8rem;">
+        {% if session_info.activities %}
+          {% for act in session_info.activities %}
+            <div style="padding: 0.35rem 0; border-bottom: 1px dashed var(--border-subtle); color: var(--text-muted);">
+              <span style="color: var(--accent-cyan);">[{{ act.time }}]</span> {{ act.message }}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div style="color: var(--text-dim); font-size: 0.8rem;">Session initiated.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 
-</html>
+</div>
+
+<script>
+function copyShareUrl() {
+  const urlText = document.getElementById("share-url-text").innerText.trim();
+  navigator.clipboard.writeText(urlText).then(() => {
+    alert("Share URL copied to clipboard!");
+  }).catch(err => {
+    console.error("Failed to copy URL:", err);
+  });
+}
+
+async function handleAction(action, requestId) {
+  try {
+    const response = await fetch(`/admin/${action}/${requestId}`, {
+      method: "POST",
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    });
+    if (response.ok) {
+      pollAdminData();
+    }
+  } catch (err) {
+    console.error("Action failed:", err);
+  }
+}
+
+async function pollAdminData() {
+  try {
+    const res = await fetch("/api/admin/data");
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Update counts
+    document.getElementById("pending-count-stat").innerText = data.pending_count;
+    document.getElementById("approved-count-stat").innerText = data.approved_count;
+
+    // Update pending requests
+    const pendingContainer = document.getElementById("pending-requests-container");
+    if (data.pending_requests.length === 0) {
+      pendingContainer.innerHTML = `
+        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+          <i class="ri-inbox-line" style="font-size: 2.5rem; color: var(--text-dim); display: block; margin-bottom: 0.5rem;"></i>
+          No pending access requests.
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
+            Collaborators opening your temporary URL will appear here.
+          </div>
+        </div>`;
+    } else {
+      let html = "";
+      data.pending_requests.forEach(req => {
+        html += `
+          <div class="request-item" id="req-card-${req.id}">
+            <div class="request-user">
+              <i class="ri-user-line" style="color: var(--accent-cyan);"></i>
+              <div>
+                <div>${req.username}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Requested: ${req.timestamp || ''}</div>
+              </div>
+            </div>
+            <div class="request-actions">
+              <button class="btn btn-success" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('approve', '${req.id}')">
+                <i class="ri-check-line"></i> Approve
+              </button>
+              <button class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('reject', '${req.id}')">
+                <i class="ri-close-line"></i> Reject
+              </button>
+            </div>
+          </div>`;
+      });
+      pendingContainer.innerHTML = html;
+    }
+
+    // Update approved collaborators
+    const approvedContainer = document.getElementById("approved-requests-container");
+    if (data.approved_requests.length === 0) {
+      approvedContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem 1rem; color: var(--text-muted); font-size: 0.85rem;">No collaborators approved yet.</div>`;
+    } else {
+      let appHtml = "";
+      data.approved_requests.forEach(req => {
+        appHtml += `
+          <div class="request-item" style="border-color: rgba(16, 185, 129, 0.3);">
+            <div class="request-user">
+              <i class="ri-checkbox-circle-line" style="color: var(--accent-green);"></i>
+              <div>
+                <div>${req.username}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Approved: ${req.approved_at || req.timestamp || ''}</div>
+              </div>
+            </div>
+            <span class="badge-live" style="font-size: 0.7rem;">Active</span>
+          </div>`;
+      });
+      approvedContainer.innerHTML = appHtml;
+    }
+
+    // Update activity feed
+    const feedContainer = document.getElementById("activity-feed-container");
+    if (data.activities && data.activities.length > 0) {
+      let actHtml = "";
+      data.activities.forEach(act => {
+        actHtml += `<div style="padding: 0.35rem 0; border-bottom: 1px dashed var(--border-subtle); color: var(--text-muted);">
+          <span style="color: var(--accent-cyan);">[${act.time}]</span> ${act.message}
+        </div>`;
+      });
+      feedContainer.innerHTML = actHtml;
+    }
+
+  } catch (err) {
+    console.error("Error polling admin data:", err);
+  }
+}
+
+// Poll every 2 seconds
+setInterval(pollAdminData, 2000);
+</script>
+
+{% endblock %}

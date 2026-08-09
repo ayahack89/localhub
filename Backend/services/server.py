@@ -5,9 +5,10 @@ class ServerService:
     def start_server(
         host="127.0.0.1",
         port=5000,
-        debug=False
+        debug=False,
+        repo_path=None
     ):
-        app = create_app()
+        app = create_app(repo_path=repo_path)
 
         print("=" * 50)
         print("🚀 LocalHub Server Activated")
@@ -19,5 +20,6 @@ class ServerService:
         app.run(
             host=host,
             port=port,
-            debug=debug, 
+            debug=debug,
+            use_reloader=False
         )

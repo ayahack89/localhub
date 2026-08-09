@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "localhub"
+version = "0.2.0"
+description = "Temporary local collaboration platform for developers"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "LocalHub Core Team" }
+]
+dependencies = [
+    "Flask>=3.0.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.30.0",
+    "click>=8.0.0"
+]
+
+[project.scripts]
+localhub = "cli.main:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"*" = ["Templates/*", "static/*", "static/**/*"]

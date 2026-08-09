@@ -1,64 +1,124 @@
 {% extends "base.html" %}
 
-{% block title %}
-LocalHub - Repository
-{% endblock %}
+{% block title %}LocalHub - {{ repo_name }}{% if current_path %} / {{ current_path }}{% endif %}{% endblock %}
 
 {% block content %}
 
-<div class="repo-header">
-
+<!-- BREADCRUMB & HEADER -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+  <div class="repo-breadcrumb" style="margin-bottom: 0;">
+    <a href="{{ url_for('home') }}">
+      <i class="ri-folder-shared-line" style="color: var(--primary);"></i> {{ repo_name }}
+    </a>
     {% if current_path %}
-        <h2>{{ current_path }}</h2>
-    {% else %}
-        <h2>Repositories</h2>
+      {% set parts = current_path.split('/') %}
+      {% set accumulated = [] %}
+      {% for part in parts %}
+        {% set _ = accumulated.append(part) %}
+        <span class="separator">/</span>
+        <a href="{{ url_for('browse_repository', relative_path='/'.join(accumulated)) }}">{{ part }}</a>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div style="display: flex; gap: 0.5rem;">
+    <button class="btn btn-secondary" onclick="showCloneHelp()">
+      <i class="ri-terminal-box-line" style="color: var(--accent-cyan);"></i> Clone via CLI
+    </button>
+  </div>
+</div>
+
+<!-- CLI CLONE NOTICE BANNER (HIDDEN BY DEFAULT OR SHOW ON DEMAND) -->
+<div id="clone-banner" class="share-banner" style="display: none; margin-bottom: 1.25rem; background: var(--bg-card); border-color: var(--accent-cyan);">
+  <div class="share-info">
+    <span class="share-label" style="color: var(--accent-cyan);">CLI Clone Command</span>
+    <div class="share-url-box" style="font-family: var(--font-mono); color: #fff;">
+      localhub clone {{ session_info.public_url or session_info.local_url }}
+    </div>
+  </div>
+  <button class="btn btn-primary" onclick="copyCloneCmd()">
+    <i class="ri-file-copy-line"></i> Copy Command
+  </button>
+</div>
+
+<!-- FILE TREE TABLE -->
+<table class="repo-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th style="width: 120px; text-align: right;">Size</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if current_path %}
+      {% set parent_parts = current_path.split('/')[:-1] %}
+      <tr>
+        <td colspan="2">
+          {% if parent_parts %}
+            <a href="{{ url_for('browse_repository', relative_path='/'.join(parent_parts)) }}" class="item-link" style="color: var(--text-muted);">
+              <i class="ri-corner-left-up-line"></i> .. (Up one level)
+            </a>
+          {% else %}
+            <a href="{{ url_for('home') }}" class="item-link" style="color: var(--text-muted);">
+              <i class="ri-corner-left-up-line"></i> .. (Root directory)
+            </a>
+          {% endif %}
+        </td>
+      </tr>
     {% endif %}
 
-</div>
-
-
-<div class="repo-list">
-
     {% for item in items %}
-
-        <div class="repo-item">
-
-            {% if item.is_directory %}
-
-                <span class="repo-icon">📁</span>
-
-                <a
-                    href="{{ url_for('browse_repository', relative_path=item.relative_path) }}"
-                    class="repo-link"
-                >
-                    {{ item.name }}
-                </a>
-
+      <tr>
+        <td>
+          {% if item.is_directory %}
+            <a href="{{ url_for('browse_repository', relative_path=item.relative_path) }}" class="item-link">
+              <i class="ri-folder-fill icon-dir"></i>
+              <span>{{ item.name }}</span>
+            </a>
+          {% else %}
+            <a href="{{ url_for('view_file', relative_path=item.relative_path) }}" class="item-link">
+              <i class="ri-file-text-line icon-file"></i>
+              <span>{{ item.name }}</span>
+            </a>
+          {% endif %}
+        </td>
+        <td style="text-align: right; color: var(--text-dim); font-size: 0.82rem; font-family: var(--font-mono);">
+          {% if item.is_directory %}
+            &mdash;
+          {% else %}
+            {% if item.size < 1024 %}
+              {{ item.size }} B
+            {% elif item.size < 1048576 %}
+              {{ (item.size / 1024)|round(1) }} KB
             {% else %}
-
-                <span class="repo-icon">📄</span>
-
-                <a
-                    href="{{ url_for('view_file', relative_path=item.relative_path) }}"
-                    class="repo-link"
-                >
-                    {{ item.name }}
-                </a>
-
+              {{ (item.size / 1048576)|round(1) }} MB
             {% endif %}
-
-        </div>
-
+          {% endif %}
+        </td>
+      </tr>
     {% else %}
-
-        <div class="empty-state">
-
-            <p>This directory is empty.</p>
-
-        </div>
-
+      <tr>
+        <td colspan="2" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+          <i class="ri-folder-open-line" style="font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--text-dim);"></i>
+          This directory is empty.
+        </td>
+      </tr>
     {% endfor %}
+  </tbody>
+</table>
 
-</div>
+<script>
+function showCloneHelp() {
+  const banner = document.getElementById("clone-banner");
+  banner.style.display = banner.style.display === "none" ? "flex" : "none";
+}
+
+function copyCloneCmd() {
+  const cmd = "localhub clone " + "{{ session_info.public_url or session_info.local_url }}";
+  navigator.clipboard.writeText(cmd).then(() => {
+    alert("CLI clone command copied to clipboard!");
+  });
+}
+</script>
 
 {% endblock %}

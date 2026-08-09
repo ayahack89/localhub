@@ -1,386 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/local-hub-favicon.png') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/remixicon.css')}}">
-    <title>{% block title %}{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}LocalHub - Local Repository Collaboration{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/local-hub-favicon.png') }}" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
 </head>
-<style>
-    :root {
-        --dark-bg: #0d1117;
-        --dark-surface: #161b22;
-        --dark-border: #30363d;
-        --dark-text: #f0f6fc;
-        --dark-text-secondary: #8b949e;
-        --dark-accent: #58a6ff;
-        
-        --light-bg: #ffffff;
-        --light-surface: #f6f8fa;
-        --light-border: #d0d7de;
-        --light-text: #24292f;
-        --light-text-secondary: #57606a;
-        --light-accent: #0969da;
-        
-        --code-bg: #f6f8fa;
-        --code-border: #e1e4e8;
-    }
-
-    [data-theme="dark"] {
-        --bg: var(--dark-bg);
-        --surface: var(--dark-surface);
-        --border: var(--dark-border);
-        --text: var(--dark-text);
-        --text-secondary: var(--dark-text-secondary);
-        --accent: var(--dark-accent);
-        --code-bg: var(--dark-surface);
-        --code-border: var(--dark-border);
-    }
-
-    [data-theme="light"] {
-        --bg: var(--light-bg);
-        --surface: var(--light-surface);
-        --border: var(--light-border);
-        --text: var(--light-text);
-        --text-secondary: var(--light-text-secondary);
-        --accent: var(--light-accent);
-        --code-bg: var(--light-surface);
-        --code-border: var(--light-border);
-    }
-
-    body {
-        background-color: var(--bg);
-        color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .container {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 1rem;
-    }
-
-    /* Navigation */
-    .navbar {
-        background-color: var(--surface);
-        border-bottom: 1px solid var(--border);
-        padding: 0.5rem 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .navbar img {
-        height: 70px;
-        width: auto;
-    }
-
-    .nav-ul {
-        display: flex;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-        gap: 1rem;
-    }
-
-    .nav-ul li {
-        list-style: none;
-    }
-
-    .nav-link {
-        color: var(--text);
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.875rem;
-        padding: 0.5rem;
-        border-radius: 6px;
-        transition: background-color 0.2s;
-    }
-
-    .nav-link:hover {
-        background-color: rgba(122, 122, 122, 0.1);
-    }
-
-    /* --- Theme Toggle Button (No Animation) --- */
-    .theme-toggle-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background-color: var(--surface);
-        color: var(--text);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        cursor: pointer;
-        transition: background-color 0.2s, border-color 0.2s;
-        width: 110px; 
-        justify-content: flex-start;
-    }
-
-    .theme-toggle-btn:hover {
-        background-color: var(--code-bg);
-        border-color: var(--text-secondary);
-    }
-
-    .theme-toggle-btn i {
-        font-size: 1.2rem;
-        color: var(--text-secondary);
-    }
-
-
-    /* Repository List */
-    .repo-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 2rem 0 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .repo-list {
-        background-color: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        overflow: hidden;
-    }
-
-    .repo-item {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--border);
-        transition: background-color 0.2s;
-    }
-
-    .repo-item:last-child {
-        border-bottom: none;
-    }
-
-    .repo-item:hover {
-        background-color: rgba(255, 255, 255, 0.03);
-    }
-
-    .repo-icon {
-        margin-right: 0.75rem;
-        color: var(--text-secondary);
-        font-size: 1.25rem;
-    }
-
-    .repo-link {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.95rem;
-    }
-
-    .repo-link:hover {
-        text-decoration: underline;
-    }
-
-    /* File View */
-    .file-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 2rem 0 1rem;
-    }
-
-    .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-    }
-
-    .breadcrumb a {
-        color: var(--accent);
-        text-decoration: none;
-    }
-
-    .breadcrumb a:hover {
-        text-decoration: underline;
-    }
-
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--text);
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        background-color: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        font-size: 0.875rem;
-        transition: background-color 0.2s;
-    }
-
-    .back-btn:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-        text-decoration: none;
-        color: var(--text);
-    }
-
-    .code-container {
-        background-color: var(--code-bg);
-        border: 1px solid var(--code-border);
-        border-radius: 6px;
-        margin: 1rem 0;
-        overflow: hidden;
-    }
-
-    .code-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.5rem 1rem;
-        background-color: rgba(0, 0, 0, 0.03);
-        border-bottom: 1px solid var(--code-border);
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-    }
-
-    .copy-btn {
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.875rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-
-    .copy-btn:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    pre {
-        margin: 0;
-        padding: 1rem;
-        overflow-x: auto;
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-        font-size: 0.875rem;
-        line-height: 1.45;
-    }
-
-    /* Empty state */
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: var(--text-secondary);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .navbar {
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1rem;
-        }
-        
-        .nav-ul {
-            width: 100%;
-            justify-content: center;
-        }
-        
-        .file-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-    }
-</style>
-
 <body>
-    <!-- Navigation -->
-   <nav class="navbar">
-        <div class="logo">
-            <img src="{{ url_for('static', filename='img/local-hub-logo.png') }}" alt="Local Hub Logo">
-        </div>
-        <ul class="nav-ul">
-            <li>
-                <a href="{{ url_for('home') }}" class="nav-link">
-                    <i class="ri-folder-line"></i>
-                    <span>Root Directory</span>
-                </a>
-            </li>
-            <li>
-                <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle theme">
-                    </button>
-            </li>
-        </ul>
-    </nav>
 
-    <div class="container">
-        {% block content %}{% endblock %}
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="{{ url_for('home') }}" class="nav-brand">
+      <div class="brand-icon">LH</div>
+      <span>LocalHub</span>
+      {% if repo_name %}
+        <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: normal;">/ {{ repo_name }}</span>
+      {% endif %}
+    </a>
+
+    <div class="nav-links">
+      {% if session_info and session_info.status == 'LIVE' %}
+        <span class="badge-live">LIVE</span>
+      {% elif session_info and session_info.status == 'STOPPED' %}
+        <span class="badge-stopped">STOPPED</span>
+      {% endif %}
+
+      {% if session.get('request_id') or session.get('is_admin') %}
+        <a href="{{ url_for('home') }}" class="nav-item">
+          <i class="ri-folder-line"></i> Repository
+        </a>
+      {% endif %}
+
+      {% if is_admin %}
+        <a href="{{ url_for('admin') }}" class="nav-item" style="color: var(--accent-cyan);">
+          <i class="ri-dashboard-line"></i> Dashboard
+        </a>
+        <a href="{{ url_for('stop_session_route') }}" class="btn btn-danger" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;" onclick="return confirm('Stop active LocalHub collaboration session?');">
+          <i class="ri-shut-down-line"></i> Stop Session
+        </a>
+      {% endif %}
     </div>
+  </nav>
 
-    <script>
-        // Wrap the entire script in a DOMContentLoaded listener to ensure the HTML is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            const themeToggleBtn = document.getElementById('theme-toggle-btn');
-            const body = document.body;
+  <!-- CONTENT -->
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
 
-            // Function to apply a theme and update the button
-            function setTheme(theme) {
-                // Set the data-theme attribute on the body
-                body.setAttribute('data-theme', theme);
-                // Save the user's preference in localStorage
-                localStorage.setItem('theme', theme);
+  <!-- FOOTER -->
+  <footer class="footer">
+    LocalHub V2 &bull; Temporary Local Collaboration Platform &bull; Secure Local-First Engine
+  </footer>
 
-                // Update the button's icon and text to show the *next* state
-                if (theme === 'dark') {
-                    themeToggleBtn.innerHTML = `<i class="ri-sun-line"></i> <span>Light</span>`;
-                } else {
-                    themeToggleBtn.innerHTML = `<i class="ri-moon-line"></i> <span>Dark</span>`;
-                }
-            }
-
-            // Click event listener for the button
-            themeToggleBtn.addEventListener('click', () => {
-                // Get the current theme from the body attribute
-                const currentTheme = body.getAttribute('data-theme');
-                // Determine the new theme by toggling the current one
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                // Apply the new theme
-                setTheme(newTheme);
-            });
-
-            // Function to set the initial theme when the page loads
-            function initializeTheme() {
-                // Check for a saved theme in localStorage
-                const savedTheme = localStorage.getItem('theme');
-                // Check the user's OS preference
-                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                // 1. If a theme is saved in localStorage, use it.
-                // 2. Otherwise, if the OS preference is dark, use dark theme.
-                // 3. Otherwise, default to light theme.
-                if (savedTheme) {
-                    setTheme(savedTheme);
-                } else {
-                    setTheme(systemPrefersDark ? 'dark' : 'light');
-                }
-            }
-
-            // Run the initialization function
-            initializeTheme();
-        });
-    </script>
 </body>
-
 </html>

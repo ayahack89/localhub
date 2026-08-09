@@ -1,2 +1,49 @@
-venv/*
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Build / Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# LocalHub Runtime & Session Data
+.localhub/
+**/.localhub/
+logs/
+*.log
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Executables & Binaries
 ngrok.exe
+*.exe
+
+# Test / Coverage outputs
+.pytest_cache/
+.coverage
+htmlcov/
+test-cloned-app/
+Demo-App/
