@@ -159,11 +159,11 @@ python -m unittest discover tests
 
 LocalHub is currently under active development.
 
-The current development build represents the upcoming **v2.0.0 release**, which focuses on turning the existing LocalHub core workflow into a properly packaged developer tool. The v2.0.0 release will include temporary project sharing, collaborator access control, repository browsing, CLI-based session management, owner auto-login, and repository snapshot cloning, together with a finalized installation and terminal experience.
+The current build is the upcoming **v2.0.0 release**. The main goal of v2.0.0 is to turn the existing LocalHub workflow into a properly packaged developer tool. It includes temporary project sharing, collaborator access control, repository browsing, CLI-based session management, owner auto-login, and repository snapshot cloning.
 
-The project is not officially released as v2.0.0 yet. The remaining v2.0.0 work is focused primarily on packaging, CLI usability, session workflow improvements, and completing the initial synchronization workflow.
+The v2.0.0 release is not official yet. The remaining work is mainly around package installation, CLI improvements, the session workflow, and finishing the initial `push` workflow.
 
-APIs, CLI commands, and internal implementation details may change during development.
+***APIs and CLI commands may change while development continues***
 
 **Current development version:** v2.0.0  
 **Official v2.0.0 release:** Coming soon
