@@ -4,7 +4,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](pyproject.toml)
 [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](cli/main.py)
 
-**Temporary local collaboration platform for developers.**  
+**A local collaboration platform for developers.**  
 *Instant local repository sharing with owner access control, automatic tunnel links, and snapshot cloning.*
 
 ---
@@ -155,18 +155,28 @@ python -m unittest discover tests
 * Follow our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) to maintain a respectful and welcoming environment.
 * Report security vulnerabilities responsibly as outlined in [SECURITY.md](SECURITY.md).
 
----
 ## 🚧 Development Status
 
-LocalHub is currently under active development. The current release includes temporary project sharing, collaborator access control, repository browsing, CLI-based session management, and repository cloning. Synchronization/push workflows and the networking layer are still being improved. APIs and CLI behavior may change between releases.
+LocalHub is currently under active development.
 
-Current version: v2.0.0
+The current development build represents the upcoming **v2.0.0 release**, which focuses on turning the existing LocalHub core workflow into a properly packaged developer tool. The v2.0.0 release will include temporary project sharing, collaborator access control, repository browsing, CLI-based session management, owner auto-login, and repository snapshot cloning, together with a finalized installation and terminal experience.
+
+The project is not officially released as v2.0.0 yet. The remaining v2.0.0 work is focused primarily on packaging, CLI usability, session workflow improvements, and completing the initial synchronization workflow.
+
+APIs, CLI commands, and internal implementation details may change during development.
+
+**Current development version:** v2.0.0  
+**Official v2.0.0 release:** Coming soon
 
 ## 📌 Roadmap
 
-- [x] **V2.0.0 Core Release**: Real Global CLI (`localhub start`), dynamic directory detection, owner auto-login dashboard, real-time access request approval/rejection polling, GitHub-inspired dark developer UI, and `localhub clone <URL>` snapshot cloning.
-- [ ] **V2.1.0 Commit & Sync Layer**: Change-set tracking, diff preview before applying collaborator changes, and bi-directional `localhub push` / `localhub pull`.
-- [ ] **Granular File Permissions**: Read-only vs. write permissions per collaborator.
+- [x] **V2.0.0 Core Architecture**: Real global CLI (`localhub start`), dynamic directory detection, owner auto-login dashboard, real-time access request approval/rejection polling, updated a polish UI and `localhub clone <URL>` snapshot cloning.
+
+- [ ] **V2.0.0 Developer Tooling & Release**: Finalize package installation and terminal experience, improve the `localhub start` workflow, complete the initial `localhub push` synchronization workflow, polish the developer experience, and prepare the official v2.0.0 release.
+
+- [ ] **V2.1.0 Networking Layer**: Improve the temporary networking architecture by exploring a custom tunneling layer and reducing LocalHub's dependency on third-party tunneling services.
+
+- [ ] **V2.2.0 Granular File Permissions**: Introduce collaborator-level permissions, including read-only and write access, with more controlled access to shared project files.
 
 ---
 
