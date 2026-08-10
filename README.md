@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](pyproject.toml)
-[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)](cli/main.py)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](cli/main.py)
 
 **Temporary local collaboration platform for developers.**  
 *Instant local repository sharing with owner access control, automatic tunnel links, and snapshot cloning.*
@@ -156,11 +156,16 @@ python -m unittest discover tests
 * Report security vulnerabilities responsibly as outlined in [SECURITY.md](SECURITY.md).
 
 ---
+## 🚧 Development Status
+
+LocalHub is currently under active development. The current release includes temporary project sharing, collaborator access control, repository browsing, CLI-based session management, and repository cloning. Synchronization/push workflows and the networking layer are still being improved. APIs and CLI behavior may change between releases.
+
+Current version: v2.0.0
 
 ## 📌 Roadmap
 
-- [x] **V2.0 Core Release**: Real Global CLI (`localhub start`), dynamic directory detection, owner auto-login dashboard, real-time access request approval/rejection polling, GitHub-inspired dark developer UI, and `localhub clone <URL>` snapshot cloning.
-- [ ] **V3.0 Commit & Sync Layer**: Change-set tracking, diff preview before applying collaborator changes, and bi-directional `localhub push` / `localhub pull`.
+- [x] **V2.0.0 Core Release**: Real Global CLI (`localhub start`), dynamic directory detection, owner auto-login dashboard, real-time access request approval/rejection polling, GitHub-inspired dark developer UI, and `localhub clone <URL>` snapshot cloning.
+- [ ] **V2.1.0 Commit & Sync Layer**: Change-set tracking, diff preview before applying collaborator changes, and bi-directional `localhub push` / `localhub pull`.
 - [ ] **Granular File Permissions**: Read-only vs. write permissions per collaborator.
 
 ---
