@@ -21,7 +21,12 @@
     {% endif %}
   </div>
 
-  <div style="display: flex; gap: 0.5rem;">
+  <div style="display: flex; align-items: center; gap: 0.75rem;">
+    {% if current_username %}
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Welcome, <strong style="color: var(--accent-cyan);">{{ current_username }}</strong>
+      </span>
+    {% endif %}
     <button class="btn btn-secondary" onclick="showCloneHelp()">
       <i class="ri-terminal-box-line" style="color: var(--accent-cyan);"></i> Clone via CLI
     </button>
@@ -32,8 +37,8 @@
 <div id="clone-banner" class="share-banner" style="display: none; margin-bottom: 1.25rem; background: var(--bg-card); border-color: var(--accent-cyan);">
   <div class="share-info">
     <span class="share-label" style="color: var(--accent-cyan);">CLI Clone Command</span>
-    <div class="share-url-box" style="font-family: var(--font-mono); color: #fff;">
-      localhub clone {{ session_info.public_url or session_info.local_url }}
+    <div class="share-url-box" id="clone-cmd-text" style="font-family: var(--font-mono); color: #fff;">
+      localhub clone {{ session_info.public_url or session_info.local_url }}{% if current_token %} --token {{ current_token }}{% endif %}
     </div>
   </div>
   <button class="btn btn-primary" onclick="copyCloneCmd()">
@@ -114,7 +119,7 @@ function showCloneHelp() {
 }
 
 function copyCloneCmd() {
-  const cmd = "localhub clone " + "{{ session_info.public_url or session_info.local_url }}";
+  const cmd = document.getElementById("clone-cmd-text").innerText.trim();
   navigator.clipboard.writeText(cmd).then(() => {
     alert("CLI clone command copied to clipboard!");
   });

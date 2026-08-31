@@ -26,6 +26,9 @@ localhub = "cli.main:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["Backend*", "Frontend*", "cli*"]
+exclude = ["tests*", "demo*", "Demo*", "Repositories*", "assets*", "build*", "dist*", "*.egg-info"]
 
 [tool.setuptools.package-data]
-"*" = ["Templates/*", "static/*", "static/**/*"]
+"Frontend" = ["Templates/*", "Templates/**/*"]
+"Backend" = ["static/*", "static/**/*"]

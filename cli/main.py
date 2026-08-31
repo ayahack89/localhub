@@ -26,13 +26,13 @@ app = typer.Typer(
     add_completion=False
 )
 
-console = Console()
+console = Console(highlight=False)
 VERSION = "0.2.0"
 
 
 def version_callback(value: bool):
     if value:
-        console.print(f"[bold cyan]LocalHub[/bold cyan] version [green]{VERSION}[/green]")
+        console.print(f"[bold cyan]LocalHub[/bold cyan] version [bold green]{VERSION}[/bold green]", highlight=False)
         raise typer.Exit()
 
 
@@ -201,71 +201,146 @@ def status():
 def clone(
     url: str = typer.Argument(..., help="The temporary LocalHub public share URL or local URL."),
     name: Optional[str] = typer.Option(None, "--name", "-n", help="Your collaborator name/identity."),
+    token: Optional[str] = typer.Option(None, "--token", "-t", help="Access token for pre-approved session."),
     destination: Optional[str] = typer.Option(None, "--out", "-o", help="Target folder name to extract project into.")
 ):
     """
     Clone a repository snapshot from an active LocalHub session URL.
     """
-    base_url = url.rstrip("/")
-    if not base_url.startswith("http://") and not base_url.startswith("https://"):
-        base_url = "http://" + base_url
+    import urllib.parse
+    parsed_url = urllib.parse.urlparse(url)
 
-    collaborator_name = name
-    if not collaborator_name:
-        collaborator_name = typer.prompt("Enter your collaborator name/identity")
+    # Extract token from query params if present and not provided via option
+    if not token and parsed_url.query:
+        query_dict = urllib.parse.parse_qs(parsed_url.query)
+        if "token" in query_dict:
+            token = query_dict["token"][0]
 
-    console.print(f"[cyan]Connecting to LocalHub session at[/cyan] [bold]{base_url}[/bold]...")
+    # Normalize base_url without query/fragment
+    if parsed_url.scheme:
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    else:
+        netloc = parsed_url.path
+        if "/" in netloc:
+            parts = netloc.split("/", 1)
+            base_url = f"http://{parts[0]}"
+        else:
+            base_url = f"http://{netloc}"
+    base_url = base_url.rstrip("/")
 
     http_session = requests.Session()
+    collaborator_name = name
 
-    # Step 1: Submit access request
-    try:
-        req_resp = http_session.post(f"{base_url}/login", data={"username": collaborator_name}, timeout=10)
-        if req_resp.status_code == 410:
-            console.print("[bold red]Error:[/bold red] The LocalHub session at this URL has been stopped.")
-            raise typer.Exit(code=1)
-        req_resp.raise_for_status()
-    except Exception as e:
-        console.print(f"[bold red]Connection error:[/bold red] Could not connect to LocalHub URL '{base_url}'. ({e})")
-        raise typer.Exit(code=1)
+    # If token is provided, verify directly with clone/status API
+    if token:
+        http_session.headers["X-LocalHub-Token"] = token
+        console.print(f"[cyan]Connecting to LocalHub session at[/cyan] [bold]{base_url}[/bold] using access token...")
 
-    # Step 2: Poll status until approved or rejected
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        transient=True
-    ) as progress:
-        task = progress.add_task(description="Waiting for repository owner approval...", total=None)
-        
-        while True:
-            time.sleep(2)
-            try:
-                status_resp = http_session.get(f"{base_url}/api/request-status", timeout=5)
-                if status_resp.status_code == 410:
-                    console.print("[bold red]Session stopped by repository owner.[/bold red]")
-                    raise typer.Exit(code=1)
-                
-                status_data = status_resp.json()
-                current_status = status_data.get("status")
-
-                if current_status == "approved":
-                    progress.update(task, description="Access approved! Preparing repository clone stream...")
-                    break
-                elif current_status == "rejected":
-                    console.print("\n[bold red]❌ Access Request Rejected:[/bold red] The repository owner rejected your access request.")
-                    raise typer.Exit(code=1)
-            except Exception as e:
-                console.print(f"\n[bold red]Error polling request status:[/bold red] {e}")
+        try:
+            clone_resp = http_session.get(f"{base_url}/api/clone?token={token}", stream=True, timeout=30)
+            if clone_resp.status_code == 410:
+                console.print("[bold red]Error:[/bold red] The LocalHub session at this URL has been stopped.")
                 raise typer.Exit(code=1)
+            elif clone_resp.status_code == 401:
+                # Check if request exists and is pending
+                status_resp = http_session.get(f"{base_url}/api/request-status?token={token}", timeout=5)
+                if status_resp.status_code == 200 and status_resp.json().get("status") == "pending":
+                    with Progress(
+                        SpinnerColumn(),
+                        TextColumn("[progress.description]{task.description}"),
+                        transient=True
+                    ) as progress:
+                        task = progress.add_task(description="Waiting for repository owner approval...", total=None)
+                        while True:
+                            time.sleep(2)
+                            st_res = http_session.get(f"{base_url}/api/request-status?token={token}", timeout=5)
+                            if st_res.status_code == 410:
+                                console.print("[bold red]Session stopped by repository owner.[/bold red]")
+                                raise typer.Exit(code=1)
+                            if st_res.status_code == 200:
+                                st_data = st_res.json()
+                                if st_data.get("status") == "approved":
+                                    progress.update(task, description="Access approved! Preparing repository clone stream...")
+                                    break
+                                elif st_data.get("status") == "rejected":
+                                    console.print("\n[bold red]❌ Access Request Rejected:[/bold red] The repository owner rejected your access request.")
+                                    raise typer.Exit(code=1)
+                    clone_resp = http_session.get(f"{base_url}/api/clone?token={token}", stream=True, timeout=30)
+                else:
+                    console.print("[bold red]Error:[/bold red] Unauthorized or invalid token. Please check your access link or token.")
+                    raise typer.Exit(code=1)
+            
+            clone_resp.raise_for_status()
 
-    # Step 3: Fetch zip archive
-    try:
-        clone_resp = http_session.get(f"{base_url}/api/clone", stream=True, timeout=30)
-        if clone_resp.status_code != 200:
-            console.print(f"[bold red]Clone failed:[/bold red] Server returned status {clone_resp.status_code}")
+        except typer.Exit:
+            raise
+        except Exception as e:
+            console.print(f"[bold red]Connection error:[/bold red] Could not connect to LocalHub URL '{base_url}'. ({e})")
             raise typer.Exit(code=1)
 
-        # Parse filename from header or fallback
+    else:
+        # Standard interactive / name-based request workflow
+        if not collaborator_name:
+            collaborator_name = typer.prompt("Enter your collaborator name/identity")
+
+        console.print(f"[cyan]Connecting to LocalHub session at[/cyan] [bold]{base_url}[/bold]...")
+
+        # Step 1: Submit access request
+        try:
+            req_resp = http_session.post(f"{base_url}/login", data={"username": collaborator_name}, timeout=10)
+            if req_resp.status_code == 410:
+                console.print("[bold red]Error:[/bold red] The LocalHub session at this URL has been stopped.")
+                raise typer.Exit(code=1)
+            req_resp.raise_for_status()
+        except Exception as e:
+            console.print(f"[bold red]Connection error:[/bold red] Could not connect to LocalHub URL '{base_url}'. ({e})")
+            raise typer.Exit(code=1)
+
+        # Step 2: Poll status until approved or rejected
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            transient=True
+        ) as progress:
+            task = progress.add_task(description="Waiting for repository owner approval...", total=None)
+            
+            while True:
+                time.sleep(2)
+                try:
+                    status_resp = http_session.get(f"{base_url}/api/request-status", timeout=5)
+                    if status_resp.status_code == 410:
+                        console.print("[bold red]Session stopped by repository owner.[/bold red]")
+                        raise typer.Exit(code=1)
+                    
+                    status_data = status_resp.json()
+                    current_status = status_data.get("status")
+
+                    if current_status == "approved":
+                        progress.update(task, description="Access approved! Preparing repository clone stream...")
+                        break
+                    elif current_status == "rejected":
+                        console.print("\n[bold red]❌ Access Request Rejected:[/bold red] The repository owner rejected your access request.")
+                        raise typer.Exit(code=1)
+                except typer.Exit:
+                    raise
+                except Exception as e:
+                    console.print(f"\n[bold red]Error polling request status:[/bold red] {e}")
+                    raise typer.Exit(code=1)
+
+        # Step 3: Fetch zip archive
+        try:
+            clone_resp = http_session.get(f"{base_url}/api/clone", stream=True, timeout=30)
+            if clone_resp.status_code != 200:
+                console.print(f"[bold red]Clone failed:[/bold red] Server returned status {clone_resp.status_code}")
+                raise typer.Exit(code=1)
+        except typer.Exit:
+            raise
+        except Exception as e:
+            console.print(f"[bold red]Clone request failed:[/bold red] {e}")
+            raise typer.Exit(code=1)
+
+    # Process downloaded snapshot archive
+    try:
         cd_header = clone_resp.headers.get("Content-Disposition", "")
         repo_filename = "cloned_repo"
         if "filename=" in cd_header:
@@ -288,7 +363,7 @@ def clone(
         with open(meta_file, "w", encoding="utf-8") as f:
             json.dump({
                 "remote_url": base_url,
-                "collaborator_name": collaborator_name,
+                "collaborator_name": collaborator_name or "Approved Collaborator",
                 "cloned_at": time.strftime("%Y-%m-%d %H:%M:%S")
             }, f, indent=2)
 
@@ -352,7 +427,7 @@ def version():
     """
     Display LocalHub CLI version.
     """
-    console.print(f"[bold cyan]LocalHub[/bold cyan] version [bold green]{VERSION}[/bold green]")
+    console.print(f"[bold cyan]LocalHub[/bold cyan] version [bold green]{VERSION}[/bold green]", highlight=False)
 
 
 if __name__ == "__main__":

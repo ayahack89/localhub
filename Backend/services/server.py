@@ -1,3 +1,4 @@
+import logging
 from Backend.app import create_app
 
 class ServerService:
@@ -8,7 +9,11 @@ class ServerService:
         debug=False,
         repo_path=None
     ):
-        app = create_app(repo_path=repo_path)
+        if not debug:
+            log = logging.getLogger('werkzeug')
+            log.setLevel(logging.ERROR)
+
+        app = create_app(repo_path=repo_path, port=port)
 
         print("=" * 50)
         print("🚀 LocalHub Server Activated")

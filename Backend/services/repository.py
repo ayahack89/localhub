@@ -1,11 +1,36 @@
 from pathlib import Path
 
 # ============================================================
-# LOCALHUB PROJECT ROOT & DYNAMIC REPOSITORY ROOT
+# PROTECTED NAMES / METADATA DIRECTORIES
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-LEGACY_REPOSITORY_ROOT = PROJECT_ROOT / "Repositories"
+PROTECTED_NAMES = {
+    ".localhub",
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+}
+
+
+def is_protected_path(target_path: Path, repo_root: Path) -> bool:
+    """Check if target_path contains protected directories or sensitive files like .env."""
+    try:
+        rel = target_path.resolve().relative_to(repo_root.resolve())
+    except ValueError:
+        return True
+
+    for part in rel.parts:
+        if part in PROTECTED_NAMES:
+            return True
+        if part.startswith(".env"):
+            return True
+    return False
+
+
+# ============================================================
+# DYNAMIC REPOSITORY ROOT
+# ============================================================
 
 _ACTIVE_REPOSITORY_ROOT = None
 
@@ -22,11 +47,9 @@ def set_repository_root(path):
 
 
 def get_repository_root():
-    """Return the active repository root, or fall back to legacy directory / current working directory."""
+    """Return the active repository root, falling back to current working directory."""
     if _ACTIVE_REPOSITORY_ROOT is not None:
         return _ACTIVE_REPOSITORY_ROOT
-    if LEGACY_REPOSITORY_ROOT.exists():
-        return LEGACY_REPOSITORY_ROOT.resolve()
     return Path.cwd().resolve()
 
 
@@ -42,6 +65,9 @@ def get_directory_contents(relative_path=""):
     if not current_path.is_relative_to(repo_root):
         raise PermissionError("Invalid repository path")
 
+    if is_protected_path(current_path, repo_root):
+        raise PermissionError("Access denied to protected directory")
+
     if not current_path.exists():
         raise FileNotFoundError("Directory does not exist")
 
@@ -55,7 +81,7 @@ def get_directory_contents(relative_path=""):
         key=lambda p: (not p.is_dir(), p.name.lower())
     ):
         # Hide internal metadata & system folders from repository view
-        if path.name in [".localhub", ".git", "__pycache__", "venv", ".venv"]:
+        if is_protected_path(path, repo_root):
             continue
 
         item_relative_path = path.relative_to(repo_root)
@@ -81,6 +107,9 @@ def get_file(relative_path):
     # Security check: Ensure file_path is within repo_root
     if not file_path.is_relative_to(repo_root):
         raise PermissionError("Invalid file path")
+
+    if is_protected_path(file_path, repo_root):
+        raise PermissionError("Access denied to protected file")
 
     if not file_path.exists():
         raise FileNotFoundError("File does not exist")

@@ -27,6 +27,12 @@
         <span class="badge-stopped">STOPPED</span>
       {% endif %}
 
+      {% if current_username %}
+        <span class="nav-item" style="color: var(--accent-cyan); font-weight: 600;">
+          <i class="ri-user-smile-line"></i> {{ current_username }}
+        </span>
+      {% endif %}
+
       {% if session.get('request_id') or session.get('is_admin') %}
         <a href="{{ url_for('home') }}" class="nav-item">
           <i class="ri-folder-line"></i> Repository

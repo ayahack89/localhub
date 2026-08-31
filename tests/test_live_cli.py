@@ -1,3 +1,4 @@
+import sys
 import time
 import shutil
 import subprocess
@@ -13,7 +14,7 @@ def test_live_cli():
     if cloned_dir.exists():
         shutil.rmtree(cloned_dir, ignore_errors=True)
 
-    localhub_bin = base_dir / "venv" / "bin" / "localhub"
+    localhub_bin = shutil.which("localhub") or str(Path(sys.prefix) / "bin" / "localhub")
 
     print("🚀 Starting LocalHub server process on port 5002...")
     server_proc = subprocess.Popen(

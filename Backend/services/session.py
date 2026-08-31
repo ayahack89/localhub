@@ -4,6 +4,8 @@ import uuid
 from pathlib import Path
 from datetime import datetime
 
+from Backend.services.access import clear_all_requests
+
 _ACTIVE_SESSION = {
     "session_id": None,
     "repo_name": "",
@@ -40,7 +42,7 @@ class SessionService:
         ]
 
         cls._save_session_file(repo_path_obj)
-        return _ACTIVE_SESSION
+        return dict(_ACTIVE_SESSION)
 
     @classmethod
     def set_public_url(cls, public_url):
@@ -54,7 +56,7 @@ class SessionService:
         # If active session memory is empty, attempt reading from .localhub/session.json in cwd
         if not _ACTIVE_SESSION["session_id"]:
             cls._load_session_file(Path.cwd())
-        return _ACTIVE_SESSION
+        return dict(_ACTIVE_SESSION)
 
     @classmethod
     def is_live(cls):

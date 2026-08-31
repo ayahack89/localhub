@@ -1,3 +1,7 @@
 recursive-include Frontend/Templates *
 recursive-include Backend/static *
 include README.md LICENSE
+recursive-exclude Repositories *
+recursive-exclude demo-app *
+recursive-exclude Demo-App *
+recursive-exclude tests *
