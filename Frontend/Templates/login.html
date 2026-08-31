@@ -1,19 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}LocalHub - Request Repository Access{% endblock %}
+{% block title %}Localhub - Request Repository Access{% endblock %}
 
 {% block content %}
 
 <div class="auth-wrapper">
   <div class="auth-card">
-    <div class="brand-icon" style="width: 48px; height: 48px; font-size: 1.3rem; margin: 0 auto 1.25rem;">LH</div>
-    <h1 class="auth-title">LocalHub Access</h1>
+    <div class="auth-icon-wrap">
+      <svg class="octicon" width="22" height="22" aria-hidden="true"><use href="#octicon-hub"></use></svg>
+    </div>
+    <h1 class="auth-title">Request Access</h1>
     <p class="auth-subtitle">
-      The owner has shared a temporary LocalHub collaboration session for <strong style="color: var(--accent-cyan);">{{ repo_name }}</strong>.
+      A Localhub collaboration session is active for <strong style="color: var(--text-primary);">{{ repo_name }}</strong>.
     </p>
 
     {% if error %}
-      <div style="background: rgba(239,68,68,0.15); color: var(--accent-red); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem;">
+      <div style="background: var(--status-red-subtle); color: var(--status-red); border: 1px solid var(--status-red-border); padding: 0.5rem 0.75rem; border-radius: var(--radius-md); font-size: 0.8125rem; margin-bottom: 1rem; text-align: left;">
         {{ error }}
       </div>
     {% endif %}
@@ -32,13 +34,14 @@
         >
       </div>
 
-      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
-        <i class="ri-lock-unlock-line"></i> Request Access
+      <button type="submit" class="btn btn-primary" style="width: 100%; height: 34px;">
+        <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-key"></use></svg>
+        <span>Request Access</span>
       </button>
     </form>
 
-    <div style="margin-top: 1.5rem; font-size: 0.78rem; color: var(--text-dim);">
-      Sessions are temporary. Once access is approved by the repository owner, you will be able to browse and clone this repository.
+    <div style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--text-tertiary); line-height: 1.4;">
+      Collaboration sessions are ephemeral. Once access is approved by the repository owner, you will be able to browse and clone this repository snapshot.
     </div>
   </div>
 </div>

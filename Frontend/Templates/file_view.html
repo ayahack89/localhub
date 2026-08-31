@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}LocalHub - {{ file_name }}{% endblock %}
+{% block title %}Localhub - {{ file_name }}{% endblock %}
 
 {% block content %}
 
 <!-- BREADCRUMB -->
-<div class="repo-breadcrumb">
-  <a href="{{ url_for('home') }}">
-    <i class="ri-folder-shared-line" style="color: var(--primary);"></i> {{ repo_name }}
+<div class="repo-breadcrumb" style="margin-bottom: 1rem;">
+  <a href="{{ url_for('home') }}" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+    <svg class="octicon" width="16" height="16" style="color: var(--text-secondary);" aria-hidden="true"><use href="#octicon-repo"></use></svg>
+    <span>{{ repo_name }}</span>
   </a>
   {% if relative_path %}
     {% set parts = relative_path.split('/') %}
@@ -18,23 +19,25 @@
       <a href="{{ url_for('browse_repository', relative_path='/'.join(accumulated)) }}">{{ part }}</a>
     {% endfor %}
     <span class="separator">/</span>
-    <span style="color: var(--text-main); font-weight: 600;">{{ file_name }}</span>
+    <span class="current-item">{{ file_name }}</span>
   {% endif %}
 </div>
 
-<!-- CODE BOX -->
+<!-- CODE VIEWER BOX -->
 <div class="code-box">
   <div class="code-box-header">
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <i class="ri-file-code-line" style="color: var(--accent-cyan);"></i>
-      <span style="font-weight: 600; color: var(--text-main);">{{ file_name }}</span>
+    <div class="code-box-title">
+      <svg class="octicon" width="16" height="16" style="color: var(--text-secondary);" aria-hidden="true"><use href="#octicon-file-code"></use></svg>
+      <span>{{ file_name }}</span>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
-      <button class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" onclick="copyCode()">
-        <i class="ri-file-copy-line"></i> Copy Code
+    <div style="display: flex; gap: 0.4rem;">
+      <button class="btn btn-secondary btn-sm" onclick="copyCode(this)">
+        <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-copy"></use></svg>
+        <span>Copy Code</span>
       </button>
-      <a href="{{ url_for('download_file', relative_path=relative_path) }}" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">
-        <i class="ri-download-line"></i> Raw / Download
+      <a href="{{ url_for('download_file', relative_path=relative_path) }}" class="btn btn-secondary btn-sm">
+        <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-download"></use></svg>
+        <span>Raw / Download</span>
       </a>
     </div>
   </div>
@@ -45,11 +48,13 @@
 </div>
 
 <script>
-async function copyCode() {
+async function copyCode(btn) {
   const codeText = document.getElementById("file-code-text").innerText;
   try {
     await navigator.clipboard.writeText(codeText);
-    alert("Code copied to clipboard!");
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-check"></use></svg> <span>Copied!</span>';
+    setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
   } catch (err) {
     console.error("Copy failed:", err);
   }

@@ -15,10 +15,6 @@ from flask import (
     jsonify,
 )
 
-# ============================================================
-# REPOSITORY & ACCESS & SESSION SERVICES
-# ============================================================
-
 from Backend.services.repository import (
     get_directory_contents,
     get_file,
@@ -40,21 +36,12 @@ from Backend.services.access import (
 
 from Backend.services.session import SessionService
 
-# ============================================================
-# ENVIRONMENT
-# ============================================================
-
 load_dotenv()
 
 ADMIN_PASSWORD = os.getenv("LOCALHUB_ADMIN_PASSWORD", "admin")
 
 
-# ============================================================
-# CREATE FLASK APP
-# ============================================================
-
 def create_app(repo_path=None, port=None):
-
     backend_dir = Path(__file__).resolve().parent
     template_folder = backend_dir.parent / "Frontend" / "Templates"
     if not template_folder.exists():
@@ -67,7 +54,6 @@ def create_app(repo_path=None, port=None):
         static_folder=str(static_folder)
     )
 
-    # Flask session secret
     app.secret_key = os.getenv(
         "LOCALHUB_SECRET_KEY",
         "localhub-development-secret-key-2026"
@@ -81,24 +67,18 @@ def create_app(repo_path=None, port=None):
         if sess.get("repo_path") != resolved_path or sess.get("status") != "LIVE":
             SessionService.init_session(repo_path, port=resolved_port, admin_token=ADMIN_PASSWORD)
     else:
-        # Initialize with current working directory if not set
         current_root = get_repository_root()
         sess = SessionService.get_session()
         resolved_path = str(current_root)
         if sess.get("repo_path") != resolved_path or sess.get("status") != "LIVE":
             SessionService.init_session(current_root, port=resolved_port, admin_token=ADMIN_PASSWORD)
 
-
-    # ========================================================
-    # ACCESS CONTROL HELPER
-    # ========================================================
-
     def require_access():
         sess_info = SessionService.get_session()
         if sess_info.get("status") == "STOPPED":
             return False
 
-        # Owner has full access to the repository
+        # Owner has unrestricted access
         if session.get("is_admin"):
             return True
 
@@ -111,15 +91,8 @@ def create_app(repo_path=None, port=None):
         if not request_data:
             return False
 
-        if request_data["status"] != "approved":
-            return False
+        return request_data.get("status") == "approved"
 
-        return True
-
-
-    # ========================================================
-    # GLOBAL TEMPLATE CONTEXT
-    # ========================================================
     @app.context_processor
     def inject_global_vars():
         sess_info = SessionService.get_session()
@@ -144,20 +117,13 @@ def create_app(repo_path=None, port=None):
             "current_token": current_token,
         }
 
-
-    # ========================================================
-    # MAIN DASHBOARD / REPOSITORY ROOT
-    # ========================================================
-
     @app.route("/", endpoint="dashboard")
     @app.route("/", endpoint="home")
     def dashboard():
-        # Check active session status
         sess_info = SessionService.get_session()
         if sess_info.get("status") == "STOPPED":
             return render_template("session_stopped.html"), 410
 
-        # Owner has direct full access without creating access request
         if session.get("is_admin"):
             try:
                 items = get_directory_contents()
@@ -175,7 +141,6 @@ def create_app(repo_path=None, port=None):
                 username="Owner"
             )
 
-        # Collaborator access check
         if "request_id" not in session:
             return redirect(url_for("login"))
 
@@ -213,11 +178,6 @@ def create_app(repo_path=None, port=None):
 
         return f"Unknown access status: {status}", 500
 
-
-    # ========================================================
-    # REPOSITORY DIRECTORY BROWSER
-    # ========================================================
-
     @app.route("/repo/<path:relative_path>")
     def browse_repository(relative_path):
         sess_info = SessionService.get_session()
@@ -244,11 +204,6 @@ def create_app(repo_path=None, port=None):
             current_path=relative_path
         )
 
-
-    # ========================================================
-    # FILE VIEW
-    # ========================================================
-
     @app.route("/file/<path:relative_path>")
     def view_file(relative_path):
         sess_info = SessionService.get_session()
@@ -269,11 +224,10 @@ def create_app(repo_path=None, port=None):
         except Exception as error:
             return f"Internal file error: {error}", 500
 
-        # Try reading as text
         try:
             content = file_path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            # Binary file -> send as attachment download
+            # Serve binary files directly as attachments
             return send_file(file_path, as_attachment=True)
 
         return render_template(
@@ -282,11 +236,6 @@ def create_app(repo_path=None, port=None):
             file_name=file_path.name,
             relative_path=relative_path
         )
-
-
-    # ========================================================
-    # FILE DOWNLOAD ENDPOINT
-    # ========================================================
 
     @app.route("/download/<path:relative_path>")
     def download_file(relative_path):
@@ -305,16 +254,15 @@ def create_app(repo_path=None, port=None):
         except Exception as error:
             return f"Download failed: {error}", 404
 
-
-    # ========================================================
-    # LOGIN / REQUEST ACCESS
-    # ========================================================
-
     @app.route("/login", methods=["GET", "POST"])
     def login():
         sess_info = SessionService.get_session()
         if sess_info.get("status") == "STOPPED":
             return render_template("session_stopped.html"), 410
+
+        # Allow collaborators to reset and submit a new request
+        if request.args.get("reset"):
+            session.pop("request_id", None)
 
         if request.method == "POST":
             username = request.form.get("username", "").strip()
@@ -339,14 +287,10 @@ def create_app(repo_path=None, port=None):
                 elif req["status"] == "pending":
                     return redirect(url_for("pending"))
                 elif req["status"] == "rejected":
-                    return redirect(url_for("access_rejected"))
+                    # Clear rejected request so collaborator can enter a new username
+                    session.pop("request_id", None)
 
         return render_template("login.html")
-
-
-    # ========================================================
-    # WAITING FOR APPROVAL
-    # ========================================================
 
     @app.route("/pending")
     def pending():
@@ -377,11 +321,6 @@ def create_app(repo_path=None, port=None):
             username=request_data["username"]
         )
 
-
-    # ========================================================
-    # ACCESS REJECTED
-    # ========================================================
-
     @app.route("/rejected")
     def access_rejected():
         sess_info = SessionService.get_session()
@@ -407,11 +346,6 @@ def create_app(repo_path=None, port=None):
             return redirect(url_for("dashboard"))
 
         return render_template("rejected.html")
-
-
-    # ========================================================
-    # REQUEST STATUS API (POLLING)
-    # ========================================================
 
     @app.route("/api/request-status")
     def request_status():
@@ -440,11 +374,6 @@ def create_app(repo_path=None, port=None):
             "username": request_data.get("username", "")
         }
 
-
-    # ========================================================
-    # ADMIN TOKEN AUTHENTICATION (OWNER BROWSER AUTO-LOGIN)
-    # ========================================================
-
     @app.route("/admin/auth")
     def admin_auth():
         token = request.args.get("token", "")
@@ -456,11 +385,6 @@ def create_app(repo_path=None, port=None):
             return redirect(url_for("admin"))
 
         return render_template("admin_login.html", error="Invalid admin auth token"), 401
-
-
-    # ========================================================
-    # ADMIN LOGIN
-    # ========================================================
 
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
@@ -483,11 +407,6 @@ def create_app(repo_path=None, port=None):
 
         return render_template("admin_login.html")
 
-
-    # ========================================================
-    # ADMIN DASHBOARD
-    # ========================================================
-
     @app.route("/admin")
     def admin():
         if not session.get("is_admin"):
@@ -503,11 +422,6 @@ def create_app(repo_path=None, port=None):
             approved_requests=approved_reqs,
             session_info=sess_info
         )
-
-
-    # ========================================================
-    # ADMIN DATA API (REAL-TIME DASHBOARD POLLING)
-    # ========================================================
 
     @app.route("/api/admin/data")
     def admin_data():
@@ -526,11 +440,6 @@ def create_app(repo_path=None, port=None):
             "approved_count": len(approved_reqs),
             "activities": sess_info.get("activities", [])
         })
-
-
-    # ========================================================
-    # APPROVE REQUEST
-    # ========================================================
 
     @app.route("/admin/approve/<request_id>", methods=["GET", "POST"])
     def approve(request_id):
@@ -552,11 +461,6 @@ def create_app(repo_path=None, port=None):
 
         return redirect(url_for("admin"))
 
-
-    # ========================================================
-    # REJECT REQUEST
-    # ========================================================
-
     @app.route("/admin/reject/<request_id>", methods=["GET", "POST"])
     def reject(request_id):
         if not session.get("is_admin"):
@@ -577,11 +481,6 @@ def create_app(repo_path=None, port=None):
 
         return redirect(url_for("admin"))
 
-
-    # ========================================================
-    # STOP SESSION
-    # ========================================================
-
     @app.route("/admin/stop", methods=["GET", "POST"])
     def stop_session_route():
         if not session.get("is_admin"):
@@ -594,21 +493,15 @@ def create_app(repo_path=None, port=None):
 
         return render_template("session_stopped.html")
 
-
-    # ========================================================
-    # API: CLONE REPOSITORY (FOR `localhub clone <URL>`)
-    # ========================================================
-
     @app.route("/api/clone", methods=["GET", "POST"])
     def api_clone():
         sess_info = SessionService.get_session()
         if sess_info.get("status") == "STOPPED":
             return jsonify({
                 "error": "Session stopped",
-                "message": "The LocalHub collaboration session has been stopped."
+                "message": "The Localhub collaboration session has been stopped."
             }), 410
 
-        # Validate collaborator access or admin
         token = request.args.get("token") or request.headers.get("X-LocalHub-Token")
         req_id = request.args.get("request_id") or request.headers.get("X-LocalHub-Request-ID")
         admin_token = sess_info.get("admin_token")
@@ -633,10 +526,9 @@ def create_app(repo_path=None, port=None):
         if not authenticated_user:
             return jsonify({
                 "error": "Unauthorized",
-                "message": "Approved LocalHub session request is required to clone this repository."
+                "message": "Approved Localhub session request is required to clone this repository."
             }), 401
 
-        # Activity log for clone
         if authenticated_user == "Owner":
             SessionService.log_activity("Owner cloned the repository")
         else:
@@ -647,7 +539,7 @@ def create_app(repo_path=None, port=None):
 
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for file_path in repo_root.rglob("*"):
-                # Skip internal directories (.localhub, .git, venv, pycache, .env)
+                # Exclude internal metadata and sensitive files (.git, .env, venv, etc.)
                 if is_protected_path(file_path, repo_root):
                     continue
 
@@ -665,11 +557,6 @@ def create_app(repo_path=None, port=None):
             as_attachment=True,
             download_name=f"{repo_root.name}.zip"
         )
-
-
-    # ========================================================
-    # API: PUSH FOUNDATION (FOR `localhub push`)
-    # ========================================================
 
     @app.route("/api/push", methods=["POST"])
     def api_push():
@@ -701,12 +588,7 @@ def create_app(repo_path=None, port=None):
 
         return jsonify({
             "status": "info",
-            "message": "LocalHub commit-based synchronization protocol foundation reached. Push requires explicit owner review in V2."
+            "message": "Localhub commit-based synchronization protocol foundation reached. Push requires explicit owner review in V2."
         })
-
-
-    # ========================================================
-    # RETURN FLASK APP
-    # ========================================================
 
     return app

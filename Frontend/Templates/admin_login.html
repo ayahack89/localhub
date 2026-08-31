@@ -1,41 +1,42 @@
 {% extends "base.html" %}
 
-{% block title %}LocalHub - Owner Login{% endblock %}
+{% block title %}Localhub - Owner Login{% endblock %}
 
 {% block content %}
 
 <div class="auth-wrapper">
   <div class="auth-card">
-    <div class="brand-icon" style="width: 48px; height: 48px; font-size: 1.3rem; margin: 0 auto 1.25rem; background: linear-gradient(135deg, var(--accent-cyan), var(--primary));">
-      <i class="ri-shield-keyhole-line"></i>
+    <div class="auth-icon-wrap">
+      <svg class="octicon" width="22" height="22" aria-hidden="true"><use href="#octicon-shield-lock"></use></svg>
     </div>
-    <h1 class="auth-title">Owner Dashboard</h1>
+    <h1 class="auth-title">Owner Authentication</h1>
     <p class="auth-subtitle">
-      Enter repository owner authentication password or session token.
+      Enter repository owner password or active session authentication token.
     </p>
 
     {% if error %}
-      <div style="background: rgba(239, 68, 68, 0.15); color: var(--accent-red); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem;">
+      <div style="background: var(--status-red-subtle); color: var(--status-red); border: 1px solid var(--status-red-border); padding: 0.5rem 0.75rem; border-radius: var(--radius-md); font-size: 0.8125rem; margin-bottom: 1rem; text-align: left;">
         {{ error }}
       </div>
     {% endif %}
 
     <form method="POST" action="{{ url_for('admin_login') }}">
       <div class="form-group">
-        <label class="form-label" for="password">Owner Password / Secret</label>
+        <label class="form-label" for="password">Owner Password / Token</label>
         <input 
           type="password" 
           id="password" 
           name="password" 
           class="form-control" 
-          placeholder="Enter owner password" 
+          placeholder="Enter owner password or token" 
           required 
           autofocus
         >
       </div>
 
-      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
-        <i class="ri-login-box-line"></i> Authenticate Dashboard
+      <button type="submit" class="btn btn-primary" style="width: 100%; height: 34px;">
+        <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-shield-lock"></use></svg>
+        <span>Authenticate Dashboard</span>
       </button>
     </form>
   </div>

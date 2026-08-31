@@ -1,57 +1,60 @@
 {% extends "base.html" %}
 
-{% block title %}LocalHub - Owner Command Center{% endblock %}
+{% block title %}Localhub - Owner Command Center{% endblock %}
 
 {% block content %}
 
 <!-- SESSION SHARE BANNER -->
 <div class="share-banner">
   <div class="share-info">
-    <span class="share-label"><i class="ri-radar-line"></i> Temporary Share URL</span>
-    <div class="share-url-box" id="share-url-text">
-      {{ session_info.public_url or session_info.local_url }}
-    </div>
-    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
-      Collaborators run: <code style="color: var(--accent-cyan); font-family: var(--font-mono);">localhub clone {{ session_info.public_url or session_info.local_url }}</code>
+    <span class="share-label">
+      <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-broadcast"></use></svg>
+      Share URL
+    </span>
+    <div class="share-url-box" id="share-url-text">{{ session_info.public_url or session_info.local_url }}</div>
+    <div class="share-hint">
+      Collaborators run: <code>localhub clone {{ session_info.public_url or session_info.local_url }}</code>
     </div>
   </div>
-  <div style="display: flex; gap: 0.5rem;">
-    <button class="btn btn-primary" onclick="copyShareUrl()">
-      <i class="ri-file-copy-line"></i> Copy Share Link
+  <div style="display: flex; gap: 0.5rem; align-items: center;">
+    <button class="btn btn-primary btn-sm" onclick="copyShareUrl(this)">
+      <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-copy"></use></svg>
+      <span>Copy Share Link</span>
     </button>
-    <a href="{{ url_for('home') }}" class="btn btn-secondary" target="_blank">
-      <i class="ri-external-link-line"></i> Open Repo
+    <a href="{{ url_for('home') }}" class="btn btn-secondary btn-sm" target="_blank">
+      <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-link-external"></use></svg>
+      <span>Open Repo</span>
     </a>
   </div>
 </div>
 
 <!-- OVERVIEW STATS GRID -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+<div class="stat-grid">
   
-  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
-    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">SESSION STATUS</div>
-    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-green); margin-top: 0.25rem;">
-      <span class="badge-live">LIVE</span>
+  <div class="stat-card">
+    <div class="stat-label">SESSION STATUS</div>
+    <div style="margin-top: 0.4rem;">
+      <span class="badge badge-live"><span class="status-dot"></span> LIVE</span>
     </div>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
-    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">PENDING REQUESTS</div>
-    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-yellow); margin-top: 0.25rem;" id="pending-count-stat">
+  <div class="stat-card">
+    <div class="stat-label">PENDING REQUESTS</div>
+    <div class="stat-value" style="color: var(--status-yellow);" id="pending-count-stat">
       {{ requests|length }}
     </div>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
-    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">APPROVED COLLABORATORS</div>
-    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-cyan); margin-top: 0.25rem;" id="approved-count-stat">
+  <div class="stat-card">
+    <div class="stat-label">APPROVED COLLABORATORS</div>
+    <div class="stat-value" style="color: var(--status-green);" id="approved-count-stat">
       {{ approved_requests|length }}
     </div>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1rem 1.25rem;">
-    <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">PROJECT DIRECTORY</div>
-    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-top: 0.4rem; font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+  <div class="stat-card">
+    <div class="stat-label">PROJECT DIRECTORY</div>
+    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-top: 0.35rem; font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
       {{ session_info.repo_name }}
     </div>
   </div>
@@ -59,16 +62,17 @@
 </div>
 
 <!-- TWO-COLUMN WORKFLOW GRID -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.25rem;">
   
   <!-- LEFT: PENDING REQUESTS -->
-  <div class="card">
+  <div class="card" style="margin-bottom: 0;">
     <div class="card-header">
       <div class="card-title">
-        <i class="ri-user-add-line" style="color: var(--accent-yellow);"></i> Pending Access Requests
+        <svg class="octicon" width="16" height="16" style="color: var(--status-yellow);" aria-hidden="true"><use href="#octicon-person"></use></svg>
+        <span>Pending Access Requests</span>
       </div>
-      <span class="badge-live" style="background: rgba(245, 158, 11, 0.12); color: var(--accent-yellow); border-color: rgba(245, 158, 11, 0.3);">
-        Auto-Polling
+      <span class="badge badge-polling">
+        <span class="status-dot"></span> Auto-Polling
       </span>
     </div>
 
@@ -77,28 +81,32 @@
         {% for req in requests %}
           <div class="request-item" id="req-card-{{ req.id }}">
             <div class="request-user">
-              <i class="ri-user-line" style="color: var(--accent-cyan);"></i>
+              <span class="nav-user-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">
+                <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-person"></use></svg>
+              </span>
               <div>
-                <div>{{ req.username }}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Requested: {{ req.timestamp }}</div>
+                <div style="font-weight: 600;">{{ req.username }}</div>
+                <div class="request-meta">Requested: {{ req.timestamp }}</div>
               </div>
             </div>
             <div class="request-actions">
-              <button class="btn btn-success" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('approve', '{{ req.id }}')">
-                <i class="ri-check-line"></i> Approve
+              <button class="btn btn-success btn-sm" onclick="handleAction('approve', '{{ req.id }}')">
+                <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-check"></use></svg>
+                <span>Approve</span>
               </button>
-              <button class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('reject', '{{ req.id }}')">
-                <i class="ri-close-line"></i> Reject
+              <button class="btn btn-danger btn-sm" onclick="handleAction('reject', '{{ req.id }}')">
+                <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-x"></use></svg>
+                <span>Reject</span>
               </button>
             </div>
           </div>
         {% endfor %}
       {% else %}
-        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
-          <i class="ri-inbox-line" style="font-size: 2.5rem; color: var(--text-dim); display: block; margin-bottom: 0.5rem;"></i>
-          No pending access requests.
-          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
-            Collaborators opening your temporary URL will appear here.
+        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary);">
+          <svg class="octicon" width="32" height="32" style="color: var(--text-tertiary); display: block; margin: 0 auto 0.75rem;" aria-hidden="true"><use href="#octicon-inbox"></use></svg>
+          <div style="font-size: 0.95rem; font-weight: 500; color: var(--text-primary);">No pending access requests.</div>
+          <div style="font-size: 0.8125rem; color: var(--text-secondary); margin-top: 0.25rem;">
+            Collaborators connecting to your share URL will appear here.
           </div>
         </div>
       {% endif %}
@@ -106,31 +114,33 @@
   </div>
 
   <!-- RIGHT: APPROVED COLLABORATORS & ACTIVITY -->
-  <div>
+  <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+    
     <!-- APPROVED COLLABORATORS -->
-    <div class="card">
+    <div class="card" style="margin-bottom: 0;">
       <div class="card-header">
         <div class="card-title">
-          <i class="ri-team-line" style="color: var(--accent-green);"></i> Approved Collaborators
+          <svg class="octicon" width="16" height="16" style="color: var(--status-green);" aria-hidden="true"><use href="#octicon-people"></use></svg>
+          <span>Approved Collaborators</span>
         </div>
       </div>
 
       <div id="approved-requests-container">
         {% if approved_requests %}
           {% for req in approved_requests %}
-            <div class="request-item" style="border-color: rgba(16, 185, 129, 0.3);">
+            <div class="request-item">
               <div class="request-user">
-                <i class="ri-checkbox-circle-line" style="color: var(--accent-green);"></i>
+                <svg class="octicon" width="16" height="16" style="color: var(--status-green);" aria-hidden="true"><use href="#octicon-check-circle"></use></svg>
                 <div>
-                  <div>{{ req.username }}</div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Approved: {{ req.approved_at or req.timestamp }}</div>
+                  <div style="font-weight: 600;">{{ req.username }}</div>
+                  <div class="request-meta">Approved: {{ req.approved_at or req.timestamp }}</div>
                 </div>
               </div>
-              <span class="badge-live" style="font-size: 0.7rem;">Active</span>
+              <span class="badge badge-live" style="font-size: 0.68rem;">Active</span>
             </div>
           {% endfor %}
         {% else %}
-          <div style="text-align: center; padding: 1.5rem 1rem; color: var(--text-muted); font-size: 0.85rem;">
+          <div style="text-align: center; padding: 1.5rem 1rem; color: var(--text-secondary); font-size: 0.8125rem;">
             No collaborators approved yet.
           </div>
         {% endif %}
@@ -138,37 +148,43 @@
     </div>
 
     <!-- ACTIVITY LOG -->
-    <div class="card">
+    <div class="card" style="margin-bottom: 0;">
       <div class="card-header">
         <div class="card-title">
-          <i class="ri-history-line" style="color: var(--accent-cyan);"></i> Activity Feed
+          <svg class="octicon" width="16" height="16" style="color: var(--accent-cyan);" aria-hidden="true"><use href="#octicon-history"></use></svg>
+          <span>Activity Feed</span>
         </div>
       </div>
 
-      <div id="activity-feed-container" style="max-height: 200px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.8rem;">
+      <div id="activity-feed-container" class="activity-feed-box">
         {% if session_info.activities %}
           {% for act in session_info.activities %}
-            <div style="padding: 0.35rem 0; border-bottom: 1px dashed var(--border-subtle); color: var(--text-muted);">
-              <span style="color: var(--accent-cyan);">[{{ act.time }}]</span> {{ act.message }}
+            <div class="activity-line">
+              <span class="activity-time">[{{ act.time }}]</span>
+              <span class="activity-msg">{{ act.message }}</span>
             </div>
           {% endfor %}
         {% else %}
-          <div style="color: var(--text-dim); font-size: 0.8rem;">Session initiated.</div>
+          <div style="color: var(--text-tertiary); font-size: 0.8125rem;">Session initiated.</div>
         {% endif %}
       </div>
     </div>
+
   </div>
 
 </div>
 
 <script>
-function copyShareUrl() {
+async function copyShareUrl(btn) {
   const urlText = document.getElementById("share-url-text").innerText.trim();
-  navigator.clipboard.writeText(urlText).then(() => {
-    alert("Share URL copied to clipboard!");
-  }).catch(err => {
+  try {
+    await navigator.clipboard.writeText(urlText);
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-check"></use></svg> <span>Copied!</span>';
+    setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+  } catch (err) {
     console.error("Failed to copy URL:", err);
-  });
+  }
 }
 
 async function handleAction(action, requestId) {
@@ -192,74 +208,85 @@ async function pollAdminData() {
     const data = await res.json();
 
     // Update counts
-    document.getElementById("pending-count-stat").innerText = data.pending_count;
-    document.getElementById("approved-count-stat").innerText = data.approved_count;
+    const pendingStat = document.getElementById("pending-count-stat");
+    const approvedStat = document.getElementById("approved-count-stat");
+    if (pendingStat) pendingStat.innerText = data.pending_count;
+    if (approvedStat) approvedStat.innerText = data.approved_count;
 
     // Update pending requests
     const pendingContainer = document.getElementById("pending-requests-container");
-    if (data.pending_requests.length === 0) {
-      pendingContainer.innerHTML = `
-        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
-          <i class="ri-inbox-line" style="font-size: 2.5rem; color: var(--text-dim); display: block; margin-bottom: 0.5rem;"></i>
-          No pending access requests.
-          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
-            Collaborators opening your temporary URL will appear here.
-          </div>
-        </div>`;
-    } else {
-      let html = "";
-      data.pending_requests.forEach(req => {
-        html += `
-          <div class="request-item" id="req-card-${req.id}">
-            <div class="request-user">
-              <i class="ri-user-line" style="color: var(--accent-cyan);"></i>
-              <div>
-                <div>${req.username}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Requested: ${req.timestamp || ''}</div>
-              </div>
-            </div>
-            <div class="request-actions">
-              <button class="btn btn-success" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('approve', '${req.id}')">
-                <i class="ri-check-line"></i> Approve
-              </button>
-              <button class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="handleAction('reject', '${req.id}')">
-                <i class="ri-close-line"></i> Reject
-              </button>
+    if (pendingContainer) {
+      if (data.pending_requests.length === 0) {
+        pendingContainer.innerHTML = `
+          <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary);">
+            <svg class="octicon" width="32" height="32" style="color: var(--text-tertiary); display: block; margin: 0 auto 0.75rem;" aria-hidden="true"><use href="#octicon-inbox"></use></svg>
+            <div style="font-size: 0.95rem; font-weight: 500; color: var(--text-primary);">No pending access requests.</div>
+            <div style="font-size: 0.8125rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Collaborators connecting to your share URL will appear here.
             </div>
           </div>`;
-      });
-      pendingContainer.innerHTML = html;
+      } else {
+        let html = "";
+        data.pending_requests.forEach(req => {
+          html += `
+            <div class="request-item" id="req-card-${req.id}">
+              <div class="request-user">
+                <span class="nav-user-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">
+                  <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-person"></use></svg>
+                </span>
+                <div>
+                  <div style="font-weight: 600;">${req.username}</div>
+                  <div class="request-meta">Requested: ${req.timestamp || ''}</div>
+                </div>
+              </div>
+              <div class="request-actions">
+                <button class="btn btn-success btn-sm" onclick="handleAction('approve', '${req.id}')">
+                  <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-check"></use></svg>
+                  <span>Approve</span>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="handleAction('reject', '${req.id}')">
+                  <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-x"></use></svg>
+                  <span>Reject</span>
+                </button>
+              </div>
+            </div>`;
+        });
+        pendingContainer.innerHTML = html;
+      }
     }
 
     // Update approved collaborators
     const approvedContainer = document.getElementById("approved-requests-container");
-    if (data.approved_requests.length === 0) {
-      approvedContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem 1rem; color: var(--text-muted); font-size: 0.85rem;">No collaborators approved yet.</div>`;
-    } else {
-      let appHtml = "";
-      data.approved_requests.forEach(req => {
-        appHtml += `
-          <div class="request-item" style="border-color: rgba(16, 185, 129, 0.3);">
-            <div class="request-user">
-              <i class="ri-checkbox-circle-line" style="color: var(--accent-green);"></i>
-              <div>
-                <div>${req.username}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Approved: ${req.approved_at || req.timestamp || ''}</div>
+    if (approvedContainer) {
+      if (data.approved_requests.length === 0) {
+        approvedContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem 1rem; color: var(--text-secondary); font-size: 0.8125rem;">No collaborators approved yet.</div>`;
+      } else {
+        let appHtml = "";
+        data.approved_requests.forEach(req => {
+          appHtml += `
+            <div class="request-item">
+              <div class="request-user">
+                <svg class="octicon" width="16" height="16" style="color: var(--status-green);" aria-hidden="true"><use href="#octicon-check-circle"></use></svg>
+                <div>
+                  <div style="font-weight: 600;">${req.username}</div>
+                  <div class="request-meta">Approved: ${req.approved_at || req.timestamp || ''}</div>
+                </div>
               </div>
-            </div>
-            <span class="badge-live" style="font-size: 0.7rem;">Active</span>
-          </div>`;
-      });
-      approvedContainer.innerHTML = appHtml;
+              <span class="badge badge-live" style="font-size: 0.68rem;">Active</span>
+            </div>`;
+        });
+        approvedContainer.innerHTML = appHtml;
+      }
     }
 
     // Update activity feed
     const feedContainer = document.getElementById("activity-feed-container");
-    if (data.activities && data.activities.length > 0) {
+    if (feedContainer && data.activities && data.activities.length > 0) {
       let actHtml = "";
       data.activities.forEach(act => {
-        actHtml += `<div style="padding: 0.35rem 0; border-bottom: 1px dashed var(--border-subtle); color: var(--text-muted);">
-          <span style="color: var(--accent-cyan);">[${act.time}]</span> ${act.message}
+        actHtml += `<div class="activity-line">
+          <span class="activity-time">[${act.time}]</span>
+          <span class="activity-msg">${act.message}</span>
         </div>`;
       });
       feedContainer.innerHTML = actHtml;

@@ -27,7 +27,22 @@ app = typer.Typer(
 )
 
 console = Console(highlight=False)
-VERSION = "0.2.0"
+
+try:
+    from importlib.metadata import version as _get_version
+    VERSION = _get_version("localhub")
+except Exception:
+    VERSION = "2.0.0"
+
+BANNER = r"""[bold cyan]██╗      ██████╗  ██████╗ █████╗ ██╗     ██╗  ██╗██╗   ██╗██████╗ 
+██║     ██╔═══██╗██╔════╝██╔══██╗██║     ██║  ██║██║   ██║██╔══██╗
+██║     ██║   ██║██║     ███████║██║     ██║  ██║██║   ██║██████╔╝
+██║     ██║   ██║██║     ██╔══██║██║     ██║  ██║██║   ██║██╔══██╗
+███████╗╚██████╔╝╚██████╗██║  ██║███████╗╚██████╔╝╚██████╔╝██████╔╝
+╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝ [/bold cyan]
+
+[dim]Local-first collaboration.[/dim]
+"""
 
 
 def version_callback(value: bool):
@@ -71,6 +86,8 @@ def start(
         console.print(f"[bold red]Error:[/bold red] Path '{project_path}' is not a directory.")
         raise typer.Exit(code=1)
 
+    console.print(BANNER)
+
     # Initialize repository root & session metadata
     set_repository_root(project_path)
     session_data = SessionService.init_session(project_path, port=port)
@@ -78,14 +95,6 @@ def start(
     local_url = session_data["local_url"]
     admin_token = session_data["admin_token"]
     owner_dashboard_url = f"{local_url}/admin/auth?token={admin_token}"
-
-    console.print(Panel(
-        f"[bold cyan]LocalHub Collaboration Session[/bold cyan]\n"
-        f"[dim]Project Root:[/dim] [bold white]{project_path}[/bold white]\n"
-        f"[dim]Repository Name:[/dim] [bold yellow]{project_path.name}[/bold yellow]",
-        title="🚀 Starting LocalHub",
-        border_style="cyan"
-    ))
 
     # Start Flask server in background thread
     server_thread = threading.Thread(
@@ -428,6 +437,18 @@ def version():
     Display LocalHub CLI version.
     """
     console.print(f"[bold cyan]LocalHub[/bold cyan] version [bold green]{VERSION}[/bold green]", highlight=False)
+
+
+# ============================================================
+# COMMAND: HELP
+# ============================================================
+
+@app.command(name="help", hidden=True)
+def help_cmd(ctx: typer.Context):
+    """
+    Show LocalHub help message and exit.
+    """
+    console.print(ctx.parent.get_help() if ctx.parent else ctx.get_help())
 
 
 if __name__ == "__main__":

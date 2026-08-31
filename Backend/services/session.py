@@ -53,7 +53,7 @@ class SessionService:
 
     @classmethod
     def get_session(cls):
-        # If active session memory is empty, attempt reading from .localhub/session.json in cwd
+        # Restore session state from disk if in-memory cache is uninitialized
         if not _ACTIVE_SESSION["session_id"]:
             cls._load_session_file(Path.cwd())
         return dict(_ACTIVE_SESSION)
@@ -70,7 +70,7 @@ class SessionService:
             "message": message
         }
         _ACTIVE_SESSION["activities"].insert(0, activity)
-        # Keep last 50 activities
+        # Retain last 50 activities
         _ACTIVE_SESSION["activities"] = _ACTIVE_SESSION["activities"][:50]
 
     @classmethod

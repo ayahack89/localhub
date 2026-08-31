@@ -6,8 +6,8 @@ Only the latest major release of LocalHub receives security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.2.x (V2) | :white_check_mark: |
-| < 0.2.0 | :x:                |
+| 2.0.x (V2) | :white_check_mark: |
+| < 2.0.0 | :x:                |
 
 ## Reporting a Vulnerability
 

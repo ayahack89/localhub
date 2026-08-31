@@ -1,178 +1,269 @@
 # LocalHub 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](pyproject.toml)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](cli/main.py)
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](pyproject.toml)
+[![Build Status](https://img.shields.io/badge/tests-30%20passed-brightgreen.svg)](tests/)
 
-**A local collaboration platform for developers.**  
+**A local-first collaboration platform and CLI engine for developers.**  
 *Instant local repository sharing with owner access control, automatic tunnel links, and snapshot cloning.*
 
----
-
-## ⚡ What is LocalHub?
-
-LocalHub is a lightweight, local-first alternative to third-party cloud hosting when you want to collaborate on a local project **right now**.
-
-Instead of pushing private code to an external service or setting up complex cloud access:
-1. Open your project folder in the terminal (`cd /path/to/my-app`)
-2. Run **`localhub start`**
-3. Share the temporary link with your collaborators
-4. Approve access requests in real time from your owner dashboard
-5. Collaborators browse your repository or run **`localhub clone <URL>`** to get a local copy
-
-When you're finished, run **`localhub stop`** to terminate the session and disconnect all access.
+> **Release Version**: `v2.0.0` (Major release following `v1.0.0`)
 
 ---
 
-## ⏱️ 30-Second Quick Start
+## 📖 Table of Contents
 
-```bash
-# 1. Install LocalHub
-pip install localhub
+- [Section A: Developer Guide](#-section-a-developer-guide)
+  - [What is LocalHub?](#what-is-localhub)
+  - [Why LocalHub Exists & Key Benefits](#why-localhub-exists--key-benefits)
+  - [Architecture & Technology Overview](#architecture--technology-overview)
+  - [Development Setup](#development-setup)
+  - [Running Tests](#running-tests)
+  - [Contribution Information](#contribution-information)
+  - [Security Information](#security-information)
+- [Section B: User & Collaborator Guide](#-section-b-user--collaborator-guide)
+  - [Installation](#installation)
+  - [30-Second Quick Start](#30-second-quick-start)
+  - [Owner Workflow](#owner-workflow)
+  - [Collaborator Workflow](#collaborator-workflow)
+  - [Browsing & Snapshot Cloning](#browsing--snapshot-cloning)
+  - [CLI Command Reference](#cli-command-reference)
+  - [Stopping a Session](#stopping-a-session)
+  - [Security & Privacy Overview](#security--privacy-overview)
+- [License](#-license)
 
-# 2. Open any project directory
-cd ~/projects/demo-app
+---
 
-# 3. Start sharing your project
-localhub start
+# 🛠️ Section A: Developer Guide
+
+### What is LocalHub?
+
+LocalHub is a lightweight, local-first developer tool that enables instant, peer-to-peer code collaboration directly from your machine. Instead of pushing incomplete or sensitive code to third-party cloud git providers, LocalHub runs a temporary local server on your machine, generates a secure public tunnel URL via Cloudflare (or serves locally), and provides both a browser UI and a CLI for collaborators to review, browse, and clone your project.
+
+### Why LocalHub Exists & Key Benefits
+
+Traditional code collaboration requires creating remote git repositories, configuring organizational permissions, or copying code archives to external cloud storage. LocalHub solves this with:
+
+* **Zero-Cloud Dependency**: Source code is streamed directly from your local filesystem. No third-party servers store your repository.
+* **Owner-Controlled Access**: Collaborators cannot browse files or download code until you explicitly approve their request from your Owner Command Center.
+* **Instant Snapshot Cloning**: Collaborators can clone your exact repository state using `localhub clone <URL>` without setting up remote git origins.
+* **Automated Tunneling**: Integrates seamlessly with Cloudflare tunnels to make local servers accessible worldwide without manual port forwarding.
+* **Strict Boundary Isolation**: Built-in security filters automatically shield `.env`, `.git`, `.localhub`, and virtual environment directories from directory browsing and archives.
+
+---
+
+### Architecture & Technology Overview
+
+LocalHub is built with a modular, service-oriented architecture:
+
+```
+┌────────────────────────────────────────────────────────┐
+│                      LocalHub CLI                      │
+│        (Typer, Rich, Click, Packaging metadata)        │
+└───────────────┬────────────────────────┬───────────────┘
+                │                        │
+                ▼                        ▼
+┌───────────────────────────────┐ ┌──────────────────────┐
+│       Session Service         │ │    Tunnel Service    │
+│  Session metadata, Activity   │ │   Cloudflare Tunnel  │
+│  logs, .localhub/session.json │ │      Subprocess      │
+└───────────────┬───────────────┘ └──────────────────────┘
+                │
+                ▼
+┌────────────────────────────────────────────────────────┐
+│                   Flask Web Engine                     │
+│  • Web UI (Jinja2, Deep-Dark Developer Design System)  │
+│  • REST APIs (/api/request-status, /api/clone, etc.)   │
+└───────────────┬────────────────────────┬───────────────┘
+                │                        │
+                ▼                        ▼
+┌───────────────────────────────┐ ┌──────────────────────┐
+│      Repository Service       │ │    Access Service    │
+│ Directory traversal guards,   │ │  In-memory request   │
+│ path resolution, file streams │ │    state lifecycle   │
+└───────────────────────────────┘ └──────────────────────┘
 ```
 
-### What happens when you run `localhub start`:
-* Automatically detects the project directory as the active repository root.
-* Launches the secure LocalHub server and Cloudflare public tunnel.
-* Prints a rich terminal dashboard with your temporary share URL.
-* Automatically opens your browser to the **Owner Command Center**.
+#### Core Components:
+* **CLI Layer (`cli/main.py`)**: Built on Typer and Rich. Handles terminal commands (`start`, `stop`, `status`, `clone`, `push`, `version`) and displays formatted terminal dashboards.
+* **Web Server (`Backend/app.py`)**: Flask web application providing server-side rendered pages for repository browsing, file viewing, access request submission, and the Owner Command Center.
+* **Session Manager (`Backend/services/session.py`)**: Manages session state (`LIVE` / `STOPPED`), port configurations, activity feeds, and saves session metadata to `.localhub/session.json`.
+* **Repository Service (`Backend/services/repository.py`)**: Resolves directory structures dynamically, ensures file access never escapes the repository root (`is_relative_to` boundary validation), and filters protected files.
+* **Access Controller (`Backend/services/access.py`)**: Manages access request lifecycles (`pending`, `approved`, `rejected`) and generates cryptographic session tokens.
+* **Tunnel Manager (`Backend/services/tunnel.py`)**: Spawns and manages Cloudflare tunnel processes for secure external access.
 
 ---
 
-## 🛠️ CLI Command Reference
+### Development Setup
 
-| Command | Description |
-| :--- | :--- |
-| `localhub start [PATH]` | Start a temporary collaboration session for the current (or specified) directory. |
-| `localhub stop` | Terminate the active LocalHub session and tunnel immediately. |
-| `localhub status` | Display the status, active URLs, and metadata of the current session. |
-| `localhub clone <URL>` | Request access and clone a snapshot of a shared LocalHub project locally. |
-| `localhub push` | Foundation command for future V3 commit/snapshot synchronization. |
-| `localhub version` | Display LocalHub CLI version (`0.2.0`). |
-
-### CLI Options for `localhub start`
-* `--port, -p INTEGER`: Port to run the local server on (default: `5000`).
-* `--no-browser`: Disable automatic browser opening for the owner dashboard.
-
----
-
-## 👥 Owner Workflow
-
-1. Run `localhub start` in your project folder.
-2. The **Owner Command Center** opens automatically at `http://127.0.0.1:5000/admin`.
-3. Copy the generated **Temporary Share URL** (e.g. `https://xxxx.trycloudflare.com`).
-4. Send the URL to your team members or collaborators.
-5. As collaborators open the link and submit access requests, they appear in your dashboard in real time.
-6. Click **Approve** to grant access, or **Reject** to deny it.
-7. Click **Stop Session** when collaboration is complete.
-
----
-
-## 💻 Collaborator Workflow
-
-1. Open the share URL provided by the repository owner.
-2. Enter your name or collaborator identity on the access request page.
-3. Wait on the real-time approval screen (no manual refresh needed).
-4. Once approved, browse the repository tree, view formatted code files, or download binary assets.
-5. Alternatively, clone the project directly via CLI:
-   ```bash
-   localhub clone https://xxxx.trycloudflare.com
-   ```
-6. The CLI will request access, wait for approval, download the repository archive, extract the tree into `./<repo-name>`, and create a local `.localhub/config.json` configuration file.
-
----
-
-## 🔒 Security & Privacy Model
-
-* **Local-First Storage**: Your project files remain on your own machine. LocalHub serves files directly from your repository root without uploading your code to third-party databases.
-* **Strict Path Traversal Guards**: Every file access request resolves paths relative to the active repository root and enforces strict path resolution checks. You cannot navigate outside the shared directory (`../` traversal is blocked).
-* **Owner Access Control**: Collaborators cannot view any repository route or download any code until the repository owner explicitly approves their request ID.
-* **Owner Dashboard Protection**: Dashboard control links (`/admin/*`) require authentication tokens or environment variable passwords (`LOCALHUB_ADMIN_PASSWORD`).
-* **Hidden Files Isolation**: Internal LocalHub metadata (`.localhub`), `.git`, `.env`, and virtual environments (`venv`) are automatically filtered from browser file listings.
-* **Instant Session Revocation**: When `localhub stop` is executed, the server and tunnel shut down, rendering the temporary URL completely inactive.
-
-For more security information, please refer to [SECURITY.md](SECURITY.md).
-
----
-
-## ⚙️ Environment Configuration
-
-LocalHub supports environment variables for securing dashboard access and configuring session options.
-
-Copy the provided template to create your local `.env` file:
-```bash
-cp .env.example .env
-```
-
-> **Note**: `.env` is automatically ignored by `.gitignore` to prevent leaking sensitive credentials. Never commit `.env` to version control.
-
----
-
-## 🏗️ Architecture Overview
-
-LocalHub V2 is structured into clean modular layers:
-
-* **CLI Module (`cli/main.py`)**: Built with Typer and Rich to provide a sleek terminal command interface.
-* **Session Manager (`Backend/services/session.py`)**: Manages live session metadata, session IDs, owner tokens, activity logs, and `.localhub/session.json`.
-* **Repository Service (`Backend/services/repository.py`)**: Resolves directory trees dynamically per session and enforces security boundaries.
-* **Access Service (`Backend/services/access.py`)**: Manages access request states (`pending`, `approved`, `rejected`).
-* **Tunnel Service (`Backend/services/tunnel.py`)**: Integrates Cloudflare tunnels dynamically for temporary URL generation.
-* **Flask Web Server (`Backend/app.py`)**: Clean REST & SSR endpoints with modern dark-mode Jinja2 templates.
-
----
-
-## 💻 Development & Open Source Setup
-
-We welcome contributions! To set up LocalHub for local development:
+To set up LocalHub locally for development:
 
 ```bash
-# 1. Clone repository
+# 1. Clone the repository
 git clone https://github.com/ayahack89/localhub.git
 cd localhub
 
-# 2. Create & activate virtual environment
+# 2. Create and activate a virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# 3. Install dependencies in editable mode
+# 3. Install the package in editable mode
 pip install -e .
 
-# 4. Run test suite
-python -m unittest discover tests
+# 4. Verify installation
+localhub version
 ```
 
 ---
 
-## 🤝 Community & Contributing
+### Running Tests
 
-* Read our [CONTRIBUTING.md](CONTRIBUTING.md) guide for guidelines on submitting issues and pull requests.
-* Follow our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) to maintain a respectful and welcoming environment.
-* Report security vulnerabilities responsibly as outlined in [SECURITY.md](SECURITY.md).
+LocalHub includes a comprehensive unit and integration test suite covering CLI commands, security boundaries, authentication, and live cloning flows:
 
-## 🚧 Development Status
+```bash
+# Run unit test discovery
+python -m unittest discover tests
 
-LocalHub is currently under active development. The core concept was done. Currently focused on packaging as a CLI tool, polishing the CLI, and improving the `push` workflow.
+# Run live end-to-end integration test
+python tests/test_live_cli.py
+```
 
-***APIs and CLI commands may change while development continues***
+---
 
-**Current development version:** v2.0.0  
-**Official v2.0.0 release:** Coming soon
+### Contribution Information
 
-## 📌 Roadmap
+Contributions, bug reports, and suggestions are welcome!
 
-- [x] **V2.0.0 Core Architecture**: Real global CLI (`localhub start`), dynamic directory detection, owner auto-login dashboard, real-time access request approval/rejection polling, updated a polish UI and `localhub clone <URL>` snapshot cloning.
+1. Fork the repository and create a feature branch (`git checkout -b feature/my-feature`).
+2. Ensure all changes adhere to existing coding style and pass the complete test suite.
+3. Submit a pull request detailing your changes.
 
-- [ ] **V2.0.0 Developer Tooling & Release**: Finalize package installation and terminal experience, improve the `localhub start` workflow, complete the initial `localhub push` synchronization workflow, polish the developer experience, and prepare the official v2.0.0 release.
+Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for full community guidelines.
 
-- [ ] **V2.1.0 Networking Layer**: Improve the temporary networking architecture by exploring a custom tunneling layer and reducing LocalHub's dependency on third-party tunneling services.
+---
 
-- [ ] **V2.2.0 Granular File Permissions**: Introduce collaborator-level permissions, including read-only and write access, with more controlled access to shared project files.
+### Security Information
+
+LocalHub incorporates multiple defensive layers to protect local source code and secrets:
+
+* **Path Traversal Defense**: All file requests are validated to ensure absolute paths resolve inside the repository root. Traversal attempts (e.g. `../../etc/passwd`) are rejected with `403 Forbidden`.
+* **Sensitive File Shielding**: Files and directories matching `.env*`, `.git`, `.localhub`, `venv`, `.venv`, and `__pycache__` are excluded from file listings and snapshot archives.
+* **Owner Authentication**: Sensitive management routes (`/admin/*`) require a valid session token or `LOCALHUB_ADMIN_PASSWORD`.
+* **Session Ephemerality**: Stopping a session immediately terminates server routes and public tunnels, returning `410 Gone` to all subsequent collaborator requests.
+
+To report security issues privately, see [SECURITY.md](SECURITY.md).
+
+---
+
+# 👥 Section B: User & Collaborator Guide
+
+### Installation
+
+Install LocalHub via pip:
+
+```bash
+pip install localhub
+```
+
+Requirements: Python 3.9+ and optionally [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) for public tunneling.
+
+---
+
+### 30-Second Quick Start
+
+```bash
+# 1. Navigate to your project directory
+cd ~/projects/my-app
+
+# 2. Start sharing
+localhub start
+```
+
+When you run `localhub start`:
+1. LocalHub initializes the current directory as the active repository root.
+2. A local server and public Cloudflare tunnel are launched.
+3. A terminal dashboard displays your **Share URL** and **Owner Dashboard** URL.
+4. Your default browser automatically opens the **Owner Command Center**.
+
+---
+
+### Owner Workflow
+
+```
+[Start Session] ──> [Share URL with Team] ──> [Review Access Requests] ──> [Approve / Reject] ──> [Stop Session]
+```
+
+1. **Launch**: Run `localhub start` in your project folder.
+2. **Share**: Copy the generated **Share URL** (e.g. `https://xxxx.trycloudflare.com`) or local LAN address.
+3. **Manage**: Open the Owner Command Center at `http://127.0.0.1:5000/admin`.
+4. **Approve**: As team members connect, their requests appear in real time. Click **Approve** to grant read and clone access, or **Reject** to decline.
+5. **Monitor**: View live session statistics, approved collaborator lists, and activity logs.
+6. **Terminate**: Click **Stop Session** in the UI or press `Ctrl+C` in your terminal to close the session.
+
+---
+
+### Collaborator Workflow
+
+1. Open the **Share URL** sent by the repository owner in your web browser.
+2. Enter your name or developer identity on the **Request Access** page.
+3. Wait on the approval screen (the interface automatically updates when the owner approves your request).
+4. Once approved, explore the repository files in the browser or clone the snapshot locally.
+
+---
+
+### Browsing & Snapshot Cloning
+
+#### In-Browser Explorer
+* **Directory Navigation**: Browse repository hierarchy with folder and file Octicons.
+* **Code Viewer**: View formatted source files with syntax styling and one-click "Copy Code".
+* **Raw Downloads**: Download individual binary assets or source files.
+
+#### CLI Snapshot Clone
+Approved collaborators can clone the repository snapshot directly into a local folder:
+
+```bash
+# Interactive clone (prompts for collaborator identity):
+localhub clone https://xxxx.trycloudflare.com
+
+# Direct clone with specified collaborator name and destination:
+localhub clone https://xxxx.trycloudflare.com --name "Alex" --out my-local-copy
+```
+
+The CLI requests access, monitors approval status, downloads the archive, extracts it into the target directory, and saves session metadata to `.localhub/config.json`.
+
+---
+
+### CLI Command Reference
+
+| Command | Description | Options |
+| :--- | :--- | :--- |
+| `localhub start [PATH]` | Start a collaboration session for the specified (or current) directory. | `--port, -p INTEGER`<br>`--no-browser` |
+| `localhub stop` | Terminate the active LocalHub session and public tunnel. | None |
+| `localhub status` | Display the status, active URLs, and metadata of the current session. | None |
+| `localhub clone <URL>` | Request access and clone a snapshot of a shared LocalHub project. | `--name, -n TEXT`<br>`--out, -o TEXT`<br>`--token, -t TEXT` |
+| `localhub push` | Verify synchronization connection with the remote LocalHub session. | None |
+| `localhub version` | Display LocalHub CLI version (`2.0.0`). | `--version, -v` |
+
+---
+
+### Stopping a Session
+
+To end collaboration and disconnect all access:
+
+* **From CLI**: Run `localhub stop` or press `Ctrl+C` in the terminal running the session.
+* **From Browser**: Click **Stop Session** in the top navigation bar of the Owner Command Center.
+
+Once stopped, the public tunnel is killed, local routes return `410 Gone`, and all active collaborator sessions are terminated immediately.
+
+---
+
+### Security & Privacy Overview
+
+* **Your Code Stays on Your Machine**: Files are streamed directly from your device on demand.
+* **No Unauthenticated Access**: Unapproved visitors cannot view file paths, file contents, or download archives.
+* **Private Metadata Protection**: `.env` credential files, `.git` history, and local virtual environments are never exposed.
+* **Instant Revocation**: Stopping a session immediately terminates all incoming connections.
 
 ---
 

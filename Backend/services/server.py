@@ -16,10 +16,10 @@ class ServerService:
         app = create_app(repo_path=repo_path, port=port)
 
         print("=" * 50)
-        print("🚀 LocalHub Server Activated")
+        print("Localhub Server Activated")
         print("=" * 50)
         print(f"Dashboard : http://{host}:{port}")
-        print("Status    : Initiated...")
+        print("Status    : Ready")
         print("=" * 50)
 
         app.run(

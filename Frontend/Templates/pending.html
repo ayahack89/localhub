@@ -1,23 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}LocalHub - Waiting for Approval{% endblock %}
+{% block title %}Localhub - Waiting for Approval{% endblock %}
 
 {% block content %}
 
 <div class="auth-wrapper">
   <div class="auth-card">
-    <div class="spinner-pulse"></div>
-    <h2 class="auth-title" style="font-size: 1.35rem;">Waiting for Owner Approval</h2>
-    <p class="auth-subtitle" style="margin-bottom: 1.5rem;">
-      Hello <strong style="color: var(--text-main);">{{ username }}</strong>, your access request for <strong style="color: var(--accent-cyan);">{{ repo_name }}</strong> was submitted.
+    <div class="status-spinner"></div>
+    <h2 class="auth-title">Waiting for Approval</h2>
+    <p class="auth-subtitle">
+      Hello <strong style="color: var(--text-primary);">{{ username }}</strong>, your access request for <strong style="color: var(--text-link);">{{ repo_name }}</strong> has been submitted.
     </p>
 
-    <div style="background: var(--bg-dark); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-      <i class="ri-radar-line" style="color: var(--accent-yellow);"></i> Checking status... This screen will automatically update when the owner responds.
+    <div style="background: var(--bg-canvas); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+      <svg class="octicon" width="14" height="14" style="color: var(--status-yellow);" aria-hidden="true"><use href="#octicon-sync"></use></svg>
+      <span>Checking approval status... Updates automatically.</span>
     </div>
 
-    <div style="font-size: 0.78rem; color: var(--text-dim);">
-      You do not need to refresh this page.
+    <div style="font-size: 0.75rem; color: var(--text-tertiary);">
+      No page refresh required.
     </div>
   </div>
 </div>

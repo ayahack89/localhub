@@ -1,27 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}LocalHub - Access Rejected{% endblock %}
+{% block title %}Localhub - Access Rejected{% endblock %}
 
 {% block content %}
 
 <div class="auth-wrapper">
-  <div class="auth-card" style="border-color: rgba(239, 68, 68, 0.4);">
-    <div style="width: 56px; height: 56px; background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem;">
-      <i class="ri-close-circle-line"></i>
+  <div class="auth-card" style="border-color: var(--status-red-border);">
+    <div class="auth-icon-wrap" style="background-color: var(--status-red-subtle); border-color: var(--status-red-border); color: var(--status-red);">
+      <svg class="octicon" width="22" height="22" aria-hidden="true"><use href="#octicon-x-circle"></use></svg>
     </div>
     
-    <h1 class="auth-title" style="color: var(--accent-red);">Access Request Rejected</h1>
+    <h1 class="auth-title" style="color: var(--status-red);">Access Rejected</h1>
     <p class="auth-subtitle">
-      The repository owner declined your request to access <strong style="color: var(--text-main);">{{ repo_name }}</strong>.
+      The repository owner declined access to <strong style="color: var(--text-primary);">{{ repo_name }}</strong>.
     </p>
 
-    <div style="background: var(--bg-dark); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: left;">
-      <div style="font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;">What now?</div>
-      If you believe this was in error, please contact the repository owner directly to request a new session link.
+    <div style="background: var(--bg-canvas); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 1.25rem; text-align: left;">
+      <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Next Steps</div>
+      If you believe this was in error, contact the repository owner to obtain a valid access link or submit a new request.
     </div>
 
-    <a href="{{ url_for('login') }}" class="btn btn-secondary" style="width: 100%;">
-      <i class="ri-refresh-line"></i> Submit New Request
+    <a href="{{ url_for('login', reset=1) }}" class="btn btn-secondary" style="width: 100%; height: 34px;">
+      <svg class="octicon" width="14" height="14" aria-hidden="true"><use href="#octicon-sync"></use></svg>
+      <span>Submit New Request</span>
     </a>
   </div>
 </div>

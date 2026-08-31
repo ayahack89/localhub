@@ -14,12 +14,12 @@ class TunnelService:
 
         cloudflared_path = shutil.which("cloudflared")
         if not cloudflared_path:
-            print("⚠️ 'cloudflared' binary not found. Running in local-only mode.")
+            print("cloudflared binary not found. Running in local-only mode.")
             print(f"Local Server available at: {url}")
             return None, None
 
         print()
-        print("🌐 Initializing LocalHub public tunnel...")
+        print("Initializing Localhub public tunnel...")
         print(f"Forwarding local address: {url}")
 
         try:
@@ -38,7 +38,7 @@ class TunnelService:
 
             public_url = None
             start_time = time.time()
-            timeout = 15  # wait up to 15 seconds for URL
+            timeout = 15  # wait up to 15 seconds for tunnel URL
 
             while time.time() - start_time < timeout:
                 line = cls._tunnel_process.stdout.readline()
@@ -53,14 +53,13 @@ class TunnelService:
 
             if public_url:
                 print("=" * 60)
-                print("✓ LocalHub public tunnel active!")
+                print("Localhub public tunnel active!")
                 print("=" * 60)
                 print(f"Public Share URL: {public_url}")
-                print("Share this temporary URL with collaborators.")
                 print("=" * 60)
                 print()
 
-                # Launch background thread to consume remaining tunnel logs
+                # Consume background tunnel process logs
                 def consume_logs():
                     try:
                         for _ in cls._tunnel_process.stdout:
@@ -71,11 +70,11 @@ class TunnelService:
                 threading.Thread(target=consume_logs, daemon=True).start()
                 return cls._tunnel_process, public_url
             else:
-                print("⚠️ Tunnel started but URL generation timed out. Proceeding with local URL.")
+                print("Tunnel started but URL generation timed out. Proceeding with local URL.")
                 return cls._tunnel_process, None
 
         except Exception as e:
-            print(f"❌ Failed to start cloudflared tunnel: {e}")
+            print(f"Failed to start cloudflared tunnel: {e}")
             return None, None
 
     @classmethod
